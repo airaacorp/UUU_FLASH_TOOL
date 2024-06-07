@@ -1,5 +1,5 @@
 # UUU_FLASH_TOOL
-<<<<<<< HEAD
+
 uuu (Universal Update Utility), mfgtools
 Embedded flashing device
 
@@ -14,4 +14,5 @@ Succeded:0       Failed:3               Wait for Known USB Devices to Appear...
 
 =======
 Embedded flashing device
->>>>>>> master
+
+
