@@ -1,4 +1,5 @@
 # UUU_FLASH_TOOL
+<<<<<<< HEAD
 uuu (Universal Update Utility), mfgtools
 Embedded flashing device
 
@@ -11,3 +12,6 @@ Succeded:0       Failed:3               Wait for Known USB Devices to Appear...
 1:11     5/5 [                                        ] SDP: jump -f u-boot-dtb.imx -ivtinitramf....
 2:1      1/5 [===>                                    ] SDP: boot -f u-boot-imx7dsabresd_sd.imx ....
 
+=======
+Embedded flashing device
+>>>>>>> master
