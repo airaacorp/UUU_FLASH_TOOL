@@ -4,7 +4,7 @@ import QtQuick.Layouts 1.15
 import USBMonitor 1.0
 
 Popup {
-    id:mfgPopup
+    id: mfgPopup
     closePolicy: Popup.NoAutoClose
     modal: true
 
@@ -319,15 +319,14 @@ Popup {
                                             }
                                             onClicked: {
                                                 console.log("Run signal is working...")
-                                                if(text==="Start"){
+                                                if (text === "Start") {
                                                     mfgPopup.startClicked()
-                                                    text="Stop"
+                                                    text = "Stop"
                                                     console.log("66666666666666stop")
-                                                }
-                                                else if(text==="Stop"){
+                                                } else if (text === "Stop") {
                                                     mfgPopup.stopClicked()
                                                     console.log("66666666666666start")
-                                                    text="Start"
+                                                    text = "Start"
                                                 }
                                             }
                                         }
@@ -392,12 +391,8 @@ Popup {
             // Extracting device name from the full path
             var deviceName = devicePath.substring(devicePath.lastIndexOf('/') + 1);
 
-            // Check if the device is HID or ttyUSB and not already in the list
-            if ((devicePath.startsWith("/dev/hidraw") || devicePath.startsWith("/dev/ttyUSB")) &&
-                !connectedDevices.includes(deviceName)) {
-                // Add the new device name to the list
-                connectedDevices.push(deviceName);
-            }
+            // Clear the connectedDevices list and add the new device
+            connectedDevices = [deviceName];
 
             // Update the driveTextField with the current list of connected devices
             updateDriveTextField();
