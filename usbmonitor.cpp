@@ -50,12 +50,35 @@ void USBMonitor::processNetlinkData()
     QString event = QString::fromUtf8(buffer.constData(), len);
     QStringList lines = event.split('\0');
     QString devicePath;
+    QString portDetails;
+    QString portNumber;
+    QString hubNumber;
+
+
+    //To get Port Details like hub & port number
+    for (const QString &line : lines) {
+        if (line.startsWith("DEVNAME=bus")) {
+            portDetails = line.mid(8);
+            QStringList bus = portDetails.split("/");
+            //qDebug()<<bus.count();
+            portNumber =bus[bus.count()-1];
+            hubNumber =bus[bus.count()-2];
+
+            //qDebug()<<portNumber<<"*****************************"<<hubNumber;
+
+        }
+    }
     for (const QString &line : lines) {
         if (line.startsWith("DEVNAME=")) {
             devicePath = "/dev/" + line.mid(8);
 
             break;
         }
+    }
+    if (event.contains("usb") && event.contains("add") && !portDetails.isEmpty()) {
+        emit usbPortConnected(portDetails,portNumber,hubNumber);
+    } else if (event.contains("usb") && event.contains("remove") && !portDetails.isEmpty()) {
+        emit usbPortDisconnected(portDetails,portNumber,hubNumber);
     }
 
     if (event.contains("usb") && event.contains("add") && !devicePath.isEmpty()) {

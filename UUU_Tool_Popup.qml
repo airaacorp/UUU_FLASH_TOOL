@@ -177,7 +177,8 @@ Popup {
                         Label {
                             id: labelId
                             Text {
-                                text: "Hub 6--Port 3"
+                                id:portNo
+                                text: "Unassigned"
                                 color: "#7d9ae4"
                                 height: 16
                                 font.family: "Calibri Light"
@@ -383,7 +384,14 @@ Popup {
 
     Connections {
         target: usbMonitor
-
+        function onUsbPortConnected(portDetails,portNumber,hubNumber) {
+            console.log("USB port connected: " +portDetails);
+            portNo.text = "Hub "+hubNumber+"--Port "+ portNumber;
+        }
+        function onUsbPortDisconnected(portDetails,portNumber,hubNumber) {
+            console.log("USB port disconnected: " +portDetails);
+            portNo.text = "Unassigned";
+        }
         function onUsbDeviceConnected(devicePath) {
             console.log("USB device connected: " + devicePath);
             statusLabel.text = "Device connected";
