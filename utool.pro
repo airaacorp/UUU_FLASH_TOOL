@@ -1,6 +1,6 @@
 QT += quick quickcontrols2
 QT += core
-QT += serialport
+#QT += serialport
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -8,6 +8,7 @@ QT += serialport
 
 SOURCES += \
         main.cpp \
+        transferprogress.cpp \
         usbmonitor.cpp
 
 RESOURCES += qml.qrc
@@ -24,4 +25,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
+    transferprogress.h \
     usbmonitor.h
