@@ -2,6 +2,7 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QQmlComponent>
+#include "transferprogress.h"
 #include "usbmonitor.h"
 
 int main(int argc, char *argv[])
@@ -12,6 +13,7 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     qmlRegisterType<USBMonitor>("USBMonitor", 1, 0, "USBMonitor");
+    qmlRegisterType<TransferProgress>("Transfer", 1, 0, "TransferProgress");
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));

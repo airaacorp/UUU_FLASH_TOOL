@@ -2,6 +2,8 @@ import QtQuick 2.15
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.15
 import USBMonitor 1.0
+import Transfer 1.0
+
 
 Popup {
     id: mfgPopup
@@ -11,6 +13,20 @@ Popup {
     property var connectedDevices: []
     signal startClicked
     signal stopClicked
+
+
+
+    TransferProgress {
+        id: transferProgress
+         onTransferStarted: {
+
+             statusLabel.text = "In Progress"
+         }
+         onTransferCompleted: {
+
+             statusLabel.text = "Done"
+         }
+    }
 
     background: Rectangle {
         color: "green"
@@ -120,39 +136,15 @@ Popup {
                                     Layout.alignment: Qt.AlignHCenter | Qt.AlignBottom
                                     Layout.bottomMargin: 25
                                     color: "transparent"
-
                                     ColumnLayout {
                                         anchors.fill: parent
-
-                                        ProgressBar {
-                                            id: progressBar
-                                            implicitWidth: parent.width - 10
-                                            implicitHeight: 36
-                                            Layout.alignment: Qt.AlignHCenter
-                                            value: 0.5
-
-                                            contentItem: Rectangle {
-                                                border.color: "#e5e5e5"
-                                                border.width: 2
-                                                clip: true
-                                                color: "#f0f0f0"
-
-                                                Rectangle {
-                                                    anchors.top: parent.top
-                                                    anchors.left: parent.left
-                                                    implicitWidth: parent.width * (1 - parent.parent.value)
-                                                    implicitHeight: parent.height
-                                                    color: "#086ACC"
-                                                }
-                                            }
-                                        }
 
                                         ProgressBar {
                                             id: progressBar2
                                             implicitWidth: parent.width - 10
                                             implicitHeight: 40
                                             Layout.alignment: Qt.AlignBottom | Qt.AlignHCenter
-                                            value: 0.5
+                                            value: transferProgress.overallProgress
 
                                             contentItem: Rectangle {
                                                 border.color: "#e5e5e5"
@@ -163,9 +155,33 @@ Popup {
                                                 Rectangle {
                                                     anchors.top: parent.top
                                                     anchors.left: parent.left
-                                                    implicitWidth: parent.width * (1 - parent.parent.value)
+
+                                                    implicitWidth: parent.width * parent.parent.value
                                                     implicitHeight: parent.height
                                                     color: "#096ACC"
+                                                }
+                                            }
+                                        }
+                                        ProgressBar {
+                                            id: progressBar
+                                            implicitWidth: parent.width - 10
+                                            implicitHeight: 36
+                                            Layout.alignment: Qt.AlignHCenter
+                                            value: transferProgress.progress
+
+                                            contentItem: Rectangle {
+                                                border.color: "#e5e5e5"
+                                                border.width: 2
+                                                clip: true
+                                                color: "#f0f0f0"
+
+                                                Rectangle {
+                                                    anchors.top: parent.top
+                                                    anchors.left: parent.left
+
+                                                    implicitWidth: parent.width * parent.parent.value
+                                                    implicitHeight: parent.height
+                                                    color: "#086ACC"
                                                 }
                                             }
                                         }
@@ -319,14 +335,13 @@ Popup {
                                                 border.width: 2
                                             }
                                             onClicked: {
-                                                console.log("Run signal is working...")
+                                                transferProgress.startTransfer()
                                                 if (text === "Start") {
                                                     mfgPopup.startClicked()
                                                     text = "Stop"
-                                                    console.log("66666666666666stop")
                                                 } else if (text === "Stop") {
+                                                    transferProgress.stopTransfer()
                                                     mfgPopup.stopClicked()
-                                                    console.log("66666666666666start")
                                                     text = "Start"
                                                 }
                                             }
