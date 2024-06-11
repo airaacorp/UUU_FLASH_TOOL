@@ -14,6 +14,8 @@ public:
 signals:
     void usbDeviceConnected(const QString &devicePath);
     void usbDeviceDisconnected(const QString &devicePath);
+    void usbPortConnected(const QString &portDetails,const QString &portNumber,const QString &hubNumber);
+    void usbPortDisconnected(const QString &portDetails,const QString &portNumber,const QString &hubNumber);
 
 private slots:
     void processNetlinkData();
