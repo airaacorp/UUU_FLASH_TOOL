@@ -8,6 +8,7 @@ QT += core
 
 SOURCES += \
         main.cpp \
+        outputstatus.cpp \
         transferprogress.cpp \
         usbmonitor.cpp
 
@@ -25,5 +26,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
+    outputstatus.h \
     transferprogress.h \
     usbmonitor.h

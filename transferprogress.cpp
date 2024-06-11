@@ -50,6 +50,7 @@ void TransferProgress::stopTransfer()
 {
     m_running = false;
     m_timer->stop();
+    emit progressStopped();
 }
 
 void TransferProgress::updateProgress()

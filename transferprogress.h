@@ -25,6 +25,7 @@ signals:
     void overallProgressChanged(double overallProgress);
     void transferStarted();
     void transferCompleted();
+    void progressStopped();
 
 public slots:
     void startTransfer();

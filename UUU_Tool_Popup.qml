@@ -26,6 +26,18 @@ Popup {
 
              statusLabel.text = "Done"
          }
+         onOverallProgressChanged: {
+             if(transferProgress.overallProgress >= 1.0){
+                 outputstatus.successStatus(1)
+             }
+             else {
+                 outputstatus.successStatus(0)
+                 outputstatus.failStatus(0)
+             }
+         }
+         onProgressStopped: {
+             outputstatus.failStatus(1)
+         }
     }
 
     background: Rectangle {
@@ -253,7 +265,7 @@ Popup {
 
                                     Text {
                                         id: susscessnumid
-                                        text: qsTr(" 0 ")
+                                        text: outputstatus.success
                                         anchors.top: parent.top
                                         anchors.topMargin: 25
                                         font.family: "Calibri Light"
@@ -275,7 +287,7 @@ Popup {
 
                                     Text {
                                         id: failurenumid
-                                        text: qsTr(" 0 ")
+                                        text: outputstatus.fail
                                         anchors.top: parent.top
                                         anchors.topMargin: 56
                                         font.family: "Calibri Light"
@@ -286,7 +298,7 @@ Popup {
 
                                     Text {
                                         id: faliedopid
-                                        text: qsTr("Failed Operations :")
+                                        text: qsTr("Failure Rate :")
                                         anchors.top: parent.top
                                         anchors.topMargin: 92
                                         font.family: "Calibri Light"
@@ -327,7 +339,7 @@ Popup {
                                             text: "Start"
                                             font.family: "Calibri Light"
                                             font.pixelSize: 14
-                                            enabled: true
+                                            enabled: transferProgress.overallProgress >= 1.0 ? false : true
                                             hoverEnabled: true
                                             background: Rectangle {
                                                 color: "#e5e5e5"
