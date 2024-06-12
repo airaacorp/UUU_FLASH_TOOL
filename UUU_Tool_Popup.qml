@@ -11,6 +11,7 @@ Popup {
     modal: true
 
     property var connectedDevices: []
+    property bool stoped: false
     signal startClicked
     signal stopClicked
 
@@ -18,25 +19,14 @@ Popup {
 
     TransferProgress {
         id: transferProgress
+
          onTransferStarted: {
 
-             statusLabel.text = "In Progress"
+             statusLabel.text = "  In Progress  "
          }
          onTransferCompleted: {
 
-             statusLabel.text = "Done"
-         }
-         onOverallProgressChanged: {
-             if(transferProgress.overallProgress >= 1.0){
-                 outputstatus.successStatus(1)
-             }
-             else {
-                 outputstatus.successStatus(0)
-                 outputstatus.failStatus(0)
-             }
-         }
-         onProgressStopped: {
-             outputstatus.failStatus(1)
+             statusLabel.text = "   Done  "
          }
     }
 
@@ -110,8 +100,8 @@ Popup {
 
                                             TextField {
                                                 id: driveTextField
-                                                height: 30
-                                                width: 100
+                                                height: 35
+                                                width: 80
                                                 font.family: "C059"
                                                 anchors.verticalCenter: driveText.verticalCenter
                                                 readOnly: true
@@ -121,17 +111,28 @@ Popup {
                                         Rectangle {
                                             id: lableRectangle
                                             Layout.preferredHeight: 40
-                                            Layout.fillWidth: true
-                                            Layout.alignment: Qt.AlignHCenter
-                                            border.width: 1
-                                            border.color: "#e5e5e5"
+                                            Layout.preferredWidth: parent.width-6
+                                            Layout.alignment: Qt.AlignHCenter |Qt.AlignTop
+                                            Layout.topMargin: 25
+                                            border.width: 1.5
+                                            border.color: "#c0c0c0"
                                             color: "transparent"
+                                            radius: 4
+                                            Rectangle{
+                                                width: parent.width
+                                                height: 2
+                                                color: "gray"
+                                                radius: 10
+                                            }
 
                                             Label {
                                                 id: statusLabel
                                                 text: "  No device is connected"
                                                 width: parent.width
                                                 anchors.centerIn: parent
+                                                anchors.left: parent.left
+                                                anchors.leftMargin: 10
+
                                                 font.family: "Calibri Light"
                                                 background: Rectangle {
                                                     color: "transparent"
@@ -148,36 +149,14 @@ Popup {
                                     Layout.alignment: Qt.AlignHCenter | Qt.AlignBottom
                                     Layout.bottomMargin: 25
                                     color: "transparent"
+
                                     ColumnLayout {
                                         anchors.fill: parent
 
                                         ProgressBar {
-                                            id: progressBar2
-                                            implicitWidth: parent.width - 10
-                                            implicitHeight: 40
-                                            Layout.alignment: Qt.AlignBottom | Qt.AlignHCenter
-                                            value: transferProgress.overallProgress
-
-                                            contentItem: Rectangle {
-                                                border.color: "#e5e5e5"
-                                                clip: true
-                                                color: "#f0f0f0"
-                                                border.width: 2
-
-                                                Rectangle {
-                                                    anchors.top: parent.top
-                                                    anchors.left: parent.left
-
-                                                    implicitWidth: parent.width * parent.parent.value
-                                                    implicitHeight: parent.height
-                                                    color: "#096ACC"
-                                                }
-                                            }
-                                        }
-                                        ProgressBar {
                                             id: progressBar
                                             implicitWidth: parent.width - 10
-                                            implicitHeight: 36
+                                            implicitHeight: 32
                                             Layout.alignment: Qt.AlignHCenter
                                             value: transferProgress.progress
 
@@ -188,15 +167,50 @@ Popup {
                                                 color: "#f0f0f0"
 
                                                 Rectangle {
+                                                    id:p1id
                                                     anchors.top: parent.top
                                                     anchors.left: parent.left
 
                                                     implicitWidth: parent.width * parent.parent.value
                                                     implicitHeight: parent.height
-                                                    color: "#086ACC"
+                                                    color: (mfgPopup.stoped===true)?"red":(progressBar2.value===1)?"green":"#096ACC"
+
+
+
                                                 }
                                             }
                                         }
+
+                                        ProgressBar {
+                                            id: progressBar2
+                                            implicitWidth: parent.width - 10
+                                            implicitHeight: 45
+                                            Layout.alignment: Qt.AlignBottom | Qt.AlignHCenter
+                                            value: transferProgress.overallProgress
+
+
+                                            contentItem: Rectangle {
+                                                border.color: "#e5e5e5"
+                                                clip: true
+                                                color: "#f0f0f0"
+                                                border.width: 2
+
+
+                                                Rectangle {
+                                                    id:singleFileprogressId
+                                                    anchors.top: parent.top
+                                                    anchors.left: parent.left
+
+                                                    implicitWidth: parent.width * parent.parent.value
+                                                    implicitHeight: parent.height
+
+                                                    color: (mfgPopup.stoped===true)?"red":(parent.width === implicitWidth) ? "green":"#096ACC"
+
+
+                                                }
+                                            }
+                                        }
+
                                     }
                                 }
                             }
@@ -265,7 +279,7 @@ Popup {
 
                                     Text {
                                         id: susscessnumid
-                                        text: outputstatus.success
+                                        text: qsTr(" 0 ")
                                         anchors.top: parent.top
                                         anchors.topMargin: 25
                                         font.family: "Calibri Light"
@@ -287,7 +301,7 @@ Popup {
 
                                     Text {
                                         id: failurenumid
-                                        text: outputstatus.fail
+                                        text: qsTr(" 0 ")
                                         anchors.top: parent.top
                                         anchors.topMargin: 56
                                         font.family: "Calibri Light"
@@ -324,7 +338,7 @@ Popup {
                                     Layout.preferredHeight: 150
                                     Layout.preferredWidth: parent.width
                                     Layout.alignment: Qt.TopEdge
-                                    Layout.topMargin: 5
+                                    Layout.topMargin: 35
                                     color: "transparent"
 
                                     RowLayout {
@@ -339,21 +353,24 @@ Popup {
                                             text: "Start"
                                             font.family: "Calibri Light"
                                             font.pixelSize: 14
-                                            enabled: transferProgress.overallProgress >= 1.0 ? false : true
+                                            enabled: true
                                             hoverEnabled: true
                                             background: Rectangle {
                                                 color: "#e5e5e5"
-                                                border.color: startButton.hovered ? "skyblue" : "transparent"
+                                                border.color: startButton.hovered ? "skyblue" : "gray"
                                                 border.width: 2
+                                                radius: 8
                                             }
                                             onClicked: {
                                                 transferProgress.startTransfer()
                                                 if (text === "Start") {
                                                     mfgPopup.startClicked()
+                                                    mfgPopup.stoped=false
                                                     text = "Stop"
                                                 } else if (text === "Stop") {
                                                     transferProgress.stopTransfer()
                                                     mfgPopup.stopClicked()
+                                                    mfgPopup.stoped=true
                                                     text = "Start"
                                                 }
                                             }
@@ -369,8 +386,9 @@ Popup {
                                             enabled: true
                                             background: Rectangle {
                                                 color: "#e5e5e5"
-                                                border.color: exitButton.hovered ? "skyblue" : "transparent"
+                                                border.color: exitButton.hovered ? "skyblue" : "gray"
                                                 border.width: 2
+                                                radius: 8
                                             }
                                             onClicked: {
                                                 console.log("Exit signal is working...")
@@ -409,6 +427,7 @@ Popup {
         id: usbMonitor
     }
 
+
     Connections {
         target: usbMonitor
         function onUsbPortConnected(portDetails,portNumber,hubNumber) {
@@ -417,11 +436,11 @@ Popup {
         }
         function onUsbPortDisconnected(portDetails,portNumber,hubNumber) {
             console.log("USB port disconnected: " +portDetails);
-            portNo.text = "Unassigned";
+            portNo.text = " Unassigned";
         }
         function onUsbDeviceConnected(devicePath) {
             console.log("USB device connected: " + devicePath);
-            statusLabel.text = "Device connected";
+            statusLabel.text = "  Device connected";
 
             // Extracting device name from the full path
             var deviceName = devicePath.substring(devicePath.lastIndexOf('/') + 1);
@@ -435,7 +454,7 @@ Popup {
 
         function onUsbDeviceDisconnected(devicePath) {
             console.log("USB device disconnected: " + devicePath);
-            statusLabel.text = "Device disconnected";
+            statusLabel.text = "  Device disconnected";
 
             // Extracting device name from the full path
             var deviceName = devicePath.substring(devicePath.lastIndexOf('/') + 1);
