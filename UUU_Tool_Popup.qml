@@ -184,7 +184,7 @@ Popup {
                                         ProgressBar {
                                             id: progressBar2
                                             implicitWidth: parent.width - 10
-                                            implicitHeight: 45
+                                            implicitHeight: 43
                                             Layout.alignment: Qt.AlignBottom | Qt.AlignHCenter
                                             value: transferProgress.overallProgress
 

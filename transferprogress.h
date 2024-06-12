@@ -1,4 +1,3 @@
-
 #ifndef TRANSFERPROGRESS_H
 #define TRANSFERPROGRESS_H
 
