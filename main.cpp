@@ -4,7 +4,7 @@
 #include <QQmlComponent>
 #include "transferprogress.h"
 #include "usbmonitor.h"
-#include "outputstatus.h"
+
 
 int main(int argc, char *argv[])
 {
@@ -17,8 +17,8 @@ int main(int argc, char *argv[])
     qmlRegisterType<TransferProgress>("Transfer", 1, 0, "TransferProgress");
 
     QQmlApplicationEngine engine;
-    OutputStatus Obj;
-    engine.rootContext()->setContextProperty("outputstatus",&Obj);
+
+
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     QObject::connect(
         &engine,
