@@ -4,7 +4,7 @@
 #include <QQmlComponent>
 #include "transferprogress.h"
 #include "usbmonitor.h"
-
+#include "failureratestatus.h"
 
 int main(int argc, char *argv[])
 {
@@ -18,6 +18,8 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
 
+    FailureRateStatus Obj;
+    engine.rootContext()->setContextProperty("failureRates",&Obj);
 
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     QObject::connect(

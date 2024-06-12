@@ -20,14 +20,20 @@ Popup {
     TransferProgress {
         id: transferProgress
 
-         onTransferStarted: {
-
-             statusLabel.text = "  In Progress  "
-         }
-         onTransferCompleted: {
-
-             statusLabel.text = "   Done  "
-         }
+        onTransferStarted: {
+            statusLabel.text = "  In Progress  "
+        }
+        onTransferCompleted: {
+            statusLabel.text = "   Done  "
+        }
+        onProgressChanged: {
+            //failureRates.setOperations(0,1)
+            failureRates.setOperations(failurenumid.text,susscessnumid.text)
+        }
+        onProgressStopped: {
+            //failureRates.setOperations(1,0)
+            failureRates.setOperations(failurenumid.text,susscessnumid.text)
+        }
     }
 
     background: Rectangle {
@@ -323,7 +329,7 @@ Popup {
 
                                     Text {
                                         id: failednumid
-                                        text: qsTr(" 0.0 % ")
+                                        text: failureRates ? (failureRates.failureRate.toFixed(1) + "%") : ""
                                         anchors.top: parent.top
                                         anchors.topMargin: 92
                                         font.family: "Calibri Light"
@@ -353,7 +359,7 @@ Popup {
                                             text: "Start"
                                             font.family: "Calibri Light"
                                             font.pixelSize: 14
-                                            enabled: true
+                                            enabled: transferProgress.overallProgress >= 1.0 ? false : true
                                             hoverEnabled: true
                                             background: Rectangle {
                                                 color: "#e5e5e5"
