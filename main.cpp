@@ -5,6 +5,7 @@
 #include "transferprogress.h"
 #include "usbmonitor.h"
 #include "failureratestatus.h"
+#include "filestatus.h"
 
 int main(int argc, char *argv[])
 {
@@ -21,6 +22,8 @@ int main(int argc, char *argv[])
     FailureRateStatus Obj;
     engine.rootContext()->setContextProperty("failureRates",&Obj);
 
+    FileStatus Obj2;
+    engine.rootContext()->setContextProperty("filestatus",&Obj2);
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     QObject::connect(
         &engine,
