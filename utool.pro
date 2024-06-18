@@ -8,7 +8,6 @@ QT += core
 
 SOURCES += \
         failureratestatus.cpp \
-        filestatus.cpp \
         main.cpp \
         transferprogress.cpp \
         usbmonitor.cpp
@@ -28,6 +27,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     failureratestatus.h \
-    filestatus.h \
     transferprogress.h \
     usbmonitor.h
