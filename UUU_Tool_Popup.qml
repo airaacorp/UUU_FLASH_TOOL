@@ -27,17 +27,17 @@ Popup {
             statusLabel.text = "   Done  "
         }
         onProgressChanged: {
-            filestatus.successStatus(0)
-            filestatus.failStatus(0)
+            transferProgress.successStatus(0)
+            transferProgress.failStatus(0)
             failureRates.setOperations(failurenumid.text,susscessnumid.text)
         }
         onOverallProgressChanged: {
             if(transferProgress.overallProgress >= 1.0){
-                filestatus.successStatus(1)
+                transferProgress.successStatus(1)
             }
         }
         onProgressStopped: {
-            filestatus.failStatus(1)  // further implementation requried,dependency on flashing
+            transferProgress.failStatus(1)  // further implementation requried,dependency on flashing
             failureRates.setOperations(failurenumid.text,susscessnumid.text)
         }
     }
@@ -291,7 +291,7 @@ Popup {
 
                                     Text {
                                         id: susscessnumid
-                                        text: filestatus.success
+                                        text: transferProgress.success
                                         anchors.top: parent.top
                                         anchors.topMargin: 25
                                         font.family: "Calibri Light"
@@ -313,7 +313,7 @@ Popup {
 
                                     Text {
                                         id: failurenumid
-                                        text: filestatus.fail
+                                        text: transferProgress.fail
                                         anchors.top: parent.top
                                         anchors.topMargin: 56
                                         font.family: "Calibri Light"

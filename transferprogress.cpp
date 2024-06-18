@@ -32,6 +32,26 @@ void TransferProgress::setOverallProgress(double overallProgress)
     }
 }
 
+int TransferProgress::success() const
+{
+   return m_success;
+}
+
+void TransferProgress::setSuccess(int success)
+{
+
+}
+
+int TransferProgress::fail() const
+{
+   return m_fail;
+}
+
+void TransferProgress::setFail(int fail)
+{
+
+}
+
 void TransferProgress::startTransfer()
 {
     if (m_overallProgress >= 1.0) {
@@ -51,6 +71,18 @@ void TransferProgress::stopTransfer()
     m_running = false;
     m_timer->stop();
     emit progressStopped();
+}
+
+void TransferProgress::successStatus(int success)
+{
+    m_success = success;
+    emit successChanged();
+}
+
+void TransferProgress::failStatus(int fail)
+{
+    m_fail = fail;
+    emit failChanged();
 }
 
 void TransferProgress::updateProgress()
