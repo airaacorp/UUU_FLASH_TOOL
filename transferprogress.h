@@ -53,8 +53,8 @@ private:
     QTimer *m_timer;
     bool m_running;
 
-    int m_success = 0;
-    int m_fail = 0;
+    int m_success;
+    int m_fail;
 };
 
 #endif // TRANSFERPROGRESS_H

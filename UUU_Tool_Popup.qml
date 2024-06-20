@@ -26,20 +26,7 @@ Popup {
         onTransferCompleted: {
             statusLabel.text = "   Done  "
         }
-        onProgressChanged: {
-            transferProgress.successStatus(0)
-            transferProgress.failStatus(0)
-            failureRates.setOperations(failurenumid.text,susscessnumid.text)
-        }
-        onOverallProgressChanged: {
-            if(transferProgress.overallProgress >= 1.0){
-                transferProgress.successStatus(1)
-            }
-        }
-        onProgressStopped: {
-            transferProgress.failStatus(1)  // further implementation requried,dependency on flashing
-            failureRates.setOperations(failurenumid.text,susscessnumid.text)
-        }
+
     }
 
     background: Rectangle {

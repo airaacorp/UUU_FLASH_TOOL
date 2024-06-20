@@ -1,7 +1,7 @@
 #include "transferprogress.h"
-
+#include <QDebug>
 TransferProgress::TransferProgress(QObject *parent)
-    : QObject(parent), m_progress(0), m_overallProgress(0), m_timer(new QTimer(this)), m_running(false)
+    : QObject(parent), m_progress(0), m_overallProgress(0), m_timer(new QTimer(this)), m_running(false),m_success(0),m_fail(0)
 {
     connect(m_timer, &QTimer::timeout, this, &TransferProgress::updateProgress);
 }
@@ -29,6 +29,7 @@ void TransferProgress::setOverallProgress(double overallProgress)
     if (m_overallProgress != overallProgress) {
         m_overallProgress = overallProgress;
         emit overallProgressChanged(m_overallProgress);
+
     }
 }
 
@@ -71,6 +72,10 @@ void TransferProgress::stopTransfer()
     m_running = false;
     m_timer->stop();
     emit progressStopped();
+    m_fail = 1;
+    m_success = 0;
+    emit successChanged();
+    emit failChanged();
 }
 
 void TransferProgress::successStatus(int success)
@@ -93,9 +98,13 @@ void TransferProgress::updateProgress()
 
     // Stop the transfer if overall progress reaches 100%
     if (m_overallProgress >= 1.0) {
+
+
         m_running = false;
         m_timer->stop();
         emit transferCompleted();
+        m_success = 1;
+        emit successChanged();
         return; // Exit the function to prevent further updates
     }
 
@@ -103,7 +112,10 @@ void TransferProgress::updateProgress()
     if (m_progress < 1.0) {
         m_progress += 2.10 / 90.0; // Increment m_progress so it completes 1 cycle in 10 ticks
         emit progressChanged(m_progress);
+        m_fail = 0;
+        emit failChanged();
     } else {
+
         // When individual progress completes, reset m_progress and increment overall progress
         m_progress = 0.0; // Reset m_progress for the next cycle
         m_overallProgress += 1.0 / 9.0; // Increment overall progress so it completes 1 cycle in 9 cycles of m_progress
