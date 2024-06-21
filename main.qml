@@ -58,14 +58,6 @@ Window {
             anchors.margins: 16
 
 
-            // Row {
-            //     Label {
-            //         text: "Confirmation"
-            //         font.pointSize: 15 /*Screen.height * 0.014*/
-            //         font.family: "Calibri Light"
-            //         verticalAlignment: Label.AlignVCenter
-            //     }
-            // }
 
             Row {
                 spacing: 10
