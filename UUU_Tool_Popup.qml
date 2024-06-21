@@ -173,7 +173,7 @@ Popup {
 
                                                     implicitWidth: parent.width * parent.parent.value
                                                     implicitHeight: parent.height
-                                                    color: (mfgPopup.stoped===true)?"red":(progressBar2.value===1)?"green":"#096ACC"
+                                                    color: (mfgPopup.stoped===true)?"red":(progressBar.value===1)?"green":"#096ACC"
 
 
 
