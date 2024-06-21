@@ -34,7 +34,7 @@ Window {
 
     function onWindowClosing(event) {
         event.accepted = false // Prevent the window from closing immediately
-        // confirmDialog.open()
+        confirmDialog.open()
     }
 
     Dialog {
