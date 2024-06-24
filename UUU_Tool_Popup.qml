@@ -323,7 +323,7 @@ Popup {
 
                                     Text {
                                         id: failednumid
-                                        text: failureRates ? (failureRates.failureRate.toFixed(1) + "%") : ""
+                                        text:"0.0%"
                                         anchors.top: parent.top
                                         anchors.topMargin: 92
                                         font.family: "Calibri Light"
