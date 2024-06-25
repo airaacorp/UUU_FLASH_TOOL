@@ -158,7 +158,8 @@ Popup {
                                             implicitWidth: parent.width - 10
                                             implicitHeight: 32
                                             Layout.alignment: Qt.AlignHCenter
-                                            value: transferProgress.progress
+                                            // Do not allow the user to start and show progressbar1 also without connecting the device min 1 device.
+                                            value: transferProgress.progress && connectedDevices.length > 0 ? transferProgress.progress : 0
 
                                             contentItem: Rectangle {
                                                 border.color: "#e5e5e5"
@@ -174,9 +175,6 @@ Popup {
                                                     implicitWidth: parent.width * parent.parent.value
                                                     implicitHeight: parent.height
                                                     color: (mfgPopup.stoped===true)?"red":(progressBar.value===1)?"green":"#096ACC"
-
-
-
                                                 }
                                             }
                                         }
@@ -186,27 +184,21 @@ Popup {
                                             implicitWidth: parent.width - 10
                                             implicitHeight: 43
                                             Layout.alignment: Qt.AlignBottom | Qt.AlignHCenter
-                                            value: transferProgress.overallProgress
-
-
+                                             // Do not allow the user to start and show progressbar2 also without connecting the device min 1 device
+                                            value: transferProgress.overallProgress && connectedDevices.length > 0 ? transferProgress.overallProgress : 0
                                             contentItem: Rectangle {
                                                 border.color: "#e5e5e5"
                                                 clip: true
                                                 color: "#f0f0f0"
                                                 border.width: 2
 
-
                                                 Rectangle {
                                                     id:singleFileprogressId
                                                     anchors.top: parent.top
                                                     anchors.left: parent.left
-
                                                     implicitWidth: parent.width * parent.parent.value
                                                     implicitHeight: parent.height
-
                                                     color: (mfgPopup.stoped===true)?"red":(parent.width === implicitWidth) ? "green":"#096ACC"
-
-
                                                 }
                                             }
                                         }
@@ -353,7 +345,8 @@ Popup {
                                             text: "Start"
                                             font.family: "Calibri Light"
                                             font.pixelSize: 14
-                                            enabled: transferProgress.overallProgress >= 1.0 ? false : true
+                                            //Without connecting the target device this wont allow to start minimum 1 device Connection should required.
+                                            enabled: connectedDevices.length > 0 && transferProgress.overallProgress < 1.0
                                             hoverEnabled: true
                                             background: Rectangle {
                                                 color: "#e5e5e5"
@@ -428,7 +421,6 @@ Popup {
     USBMonitor {
         id: usbMonitor
     }
-
 
     Connections {
         target: usbMonitor

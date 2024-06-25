@@ -1,5 +1,9 @@
 #include "transferprogress.h"
 #include <QDebug>
+#include <QException>
+#include "log.h"
+#include "ExceptionHandler.h"
+
 TransferProgress::TransferProgress(QObject *parent)
     : QObject(parent), m_progress(0), m_overallProgress(0), m_timer(new QTimer(this)), m_running(false),m_success(0),m_fail(0)
 {
@@ -41,6 +45,7 @@ int TransferProgress::success() const
 void TransferProgress::setSuccess(int success)
 {
 
+    qDebug()<< "SetSuccess "<<success ;
 }
 
 int TransferProgress::fail() const
@@ -50,7 +55,7 @@ int TransferProgress::fail() const
 
 void TransferProgress::setFail(int fail)
 {
-
+    qDebug() << "setfail: "<< fail;
 }
 
 void TransferProgress::startTransfer()
@@ -69,13 +74,20 @@ void TransferProgress::startTransfer()
 
 void TransferProgress::stopTransfer()
 {
+    try{
     m_running = false;
     m_timer->stop();
     emit progressStopped();
     m_fail = 1;
     m_success = 0;
+    qDebug() <<"Failure: " << m_fail;
+    logActivity("Failure: " + std::to_string(m_fail));
     emit successChanged();
     emit failChanged();
+    }
+    catch(std::exception e){
+        throw CustomException(ERROR_FAILURE_MSG,ERROR_FAILURE);
+    }
 }
 
 void TransferProgress::successStatus(int success)
@@ -92,6 +104,8 @@ void TransferProgress::failStatus(int fail)
 
 void TransferProgress::updateProgress()
 {
+    try{
+
     if (!m_running) {
         return;
     }
@@ -104,6 +118,8 @@ void TransferProgress::updateProgress()
         m_timer->stop();
         emit transferCompleted();
         m_success = 1;
+        qInfo() <<"Success: " << m_success;
+        logActivity("Successfully Completed Flashing : " + std::to_string(m_success));
         emit successChanged();
         return; // Exit the function to prevent further updates
     }
@@ -120,5 +136,8 @@ void TransferProgress::updateProgress()
         m_progress = 0.0; // Reset m_progress for the next cycle
         m_overallProgress += 1.0 / 9.0; // Increment overall progress so it completes 1 cycle in 9 cycles of m_progress
         emit overallProgressChanged(m_overallProgress);
+    }
+    }catch(std::exception e){
+        CustomException(ERROR_PROGRESSBAR_COMPLETED_MSG,ERROR_SUCCESS);
     }
 }
