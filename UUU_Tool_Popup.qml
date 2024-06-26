@@ -27,7 +27,6 @@ Popup {
         onTransferCompleted: {
             statusLabel.text = "   Done  "
         }
-
     }
 
     background: Rectangle {
@@ -315,7 +314,8 @@ Popup {
 
                                     Text {
                                         id: failednumid
-                                        text:"0.0%"
+                                        // Set text to failureRate formatted to two decimal places, followed by a percentage sign
+                                        text: transferProgress.failureRate.toFixed(2) + "%"
                                         anchors.top: parent.top
                                         anchors.topMargin: 92
                                         font.family: "Calibri Light"

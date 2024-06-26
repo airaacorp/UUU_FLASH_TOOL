@@ -12,6 +12,8 @@ class TransferProgress : public QObject
     //Defines property definition for success and fail operations
     Q_PROPERTY(int success READ success WRITE setSuccess NOTIFY successChanged FINAL)
     Q_PROPERTY(int fail READ fail WRITE setFail NOTIFY failChanged FINAL)
+    //Property definition for failureRate with getter and change notification
+    Q_PROPERTY(double failureRate READ failureRate NOTIFY failureRateChanged)
 
 public:
     explicit TransferProgress(QObject *parent = nullptr);
@@ -26,6 +28,8 @@ public:
     void setSuccess(int success);
     int fail() const;
     void setFail(int fail);
+    // Getter method for failureRate property
+    double failureRate() const;
 
 signals:
     void progressChanged(double progress);
@@ -36,6 +40,8 @@ signals:
     // Signals for notifying changes in success and fail counts
     void successChanged();
     void failChanged();
+    // Signal emitted when failureRate property changes
+    void failureRateChanged();
 
 public slots:
     void startTransfer();
@@ -46,15 +52,17 @@ public slots:
 
 private slots:
     void updateProgress();
+    //Slot to Update failureRate based on number of failed and successful operations
+    void updateFailureRate(int failureOperations, int successOperations);
 
 private:
     double m_progress;
     double m_overallProgress;
     QTimer *m_timer;
     bool m_running;
-
     int m_success;  // Success count
     int m_fail;    // Fail count
+    double m_failureRate; // Member variable for failureRate
 };
 
 #endif // TRANSFERPROGRESS_H
