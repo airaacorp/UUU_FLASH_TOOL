@@ -3,7 +3,7 @@ import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import USBMonitor 1.0
 import Transfer 1.0
-
+import QtQuick.Window 2.15
 
 Popup {
     id: mfgPopup
@@ -14,8 +14,8 @@ Popup {
     property bool stoped: false
     signal startClicked
     signal stopClicked
+    signal existClicked
 
-    property real scalefactor: 1.0 // Define scalefactor here
 
 
     TransferProgress {
@@ -29,16 +29,12 @@ Popup {
         }
     }
 
-    background: Rectangle {
-        color: "green"
-        border.color: "skyblue"
-        border.width: 1
-        radius: 10
+    Colors{
+        id:colors
     }
 
     contentItem: Rectangle {
         anchors.fill: parent
-        color: "green"
 
         ColumnLayout {
             anchors.fill: parent
@@ -48,7 +44,7 @@ Popup {
                 id: bottomRectangle
                 Layout.fillHeight: true
                 Layout.fillWidth: true
-                color: "#f0f0f0"
+                color: colors.backgroundcolor
 
                 RowLayout {
                     anchors.fill: parent
@@ -69,7 +65,7 @@ Popup {
                                 bottom: parent.bottom
                                 horizontalCenter: parent.horizontalCenter
                             }
-                            border.color: "#e5e5e5"
+                            border.color: colors.bordercolor
                             border.width: 1.5
                             radius: 6
 
@@ -114,7 +110,7 @@ Popup {
                                             Layout.alignment: Qt.AlignHCenter |Qt.AlignTop
                                             Layout.topMargin: 25
                                             border.width: 1.5
-                                            border.color: "#c0c0c0"
+                                            border.color:colors.deviselablebordercolor
                                             color: "transparent"
                                             radius: 4
                                             Rectangle{
@@ -161,10 +157,10 @@ Popup {
                                             value: transferProgress.progress && connectedDevices.length > 0 ? transferProgress.progress : 0
 
                                             contentItem: Rectangle {
-                                                border.color: "#e5e5e5"
+                                                border.color: colors.bordercolor
                                                 border.width: 2
                                                 clip: true
-                                                color: "#f0f0f0"
+                                                color: colors.backgroundcolor
 
                                                 Rectangle {
                                                     id:p1id
@@ -173,7 +169,7 @@ Popup {
 
                                                     implicitWidth: parent.width * parent.parent.value
                                                     implicitHeight: parent.height
-                                                    color: (mfgPopup.stoped===true)?"red":(progressBar.value===1)?"green":"#096ACC"
+                                                    color: (mfgPopup.stoped===true)?"red":(progressBar.value===1)?"green":colors.inprogresscolor
                                                 }
                                             }
                                         }
@@ -186,9 +182,9 @@ Popup {
                                              // Do not allow the user to start and show progressbar2 also without connecting the device min 1 device
                                             value: transferProgress.overallProgress && connectedDevices.length > 0 ? transferProgress.overallProgress : 0
                                             contentItem: Rectangle {
-                                                border.color: "#e5e5e5"
+                                                border.color: colors.bordercolor
                                                 clip: true
-                                                color: "#f0f0f0"
+                                                color: colors.backgroundcolor
                                                 border.width: 2
 
                                                 Rectangle {
@@ -197,7 +193,7 @@ Popup {
                                                     anchors.left: parent.left
                                                     implicitWidth: parent.width * parent.parent.value
                                                     implicitHeight: parent.height
-                                                    color: (mfgPopup.stoped===true)?"red":(parent.width === implicitWidth) ? "green":"#096ACC"
+                                                    color: (mfgPopup.stoped===true)?"red":(parent.width === implicitWidth) ? "green":colors.inprogresscolor
                                                 }
                                             }
                                         }
@@ -212,13 +208,13 @@ Popup {
                             Text {
                                 id:portNo
                                 text: "Unassigned"
-                                color: "#7d9ae4"
+                                color: colors.titiletextcolor
                                 height: 16
                                 font.family: "Calibri Light"
                                 font.pixelSize: 16
                             }
                             background: Rectangle {
-                                color: "#f0f0f0"
+                                color: colors.backgroundcolor
                             }
                             anchors {
                                 left: parent.left
@@ -253,7 +249,7 @@ Popup {
                                     Layout.alignment: Qt.TopEdge
                                     Layout.topMargin: 8
                                     color: "transparent"
-                                    border.color: "#e5e5e5"
+                                    border.color: colors.bordercolor
                                     border.width: 2
                                     radius: 6
 
@@ -349,7 +345,7 @@ Popup {
                                             enabled: connectedDevices.length > 0 && transferProgress.overallProgress < 1.0
                                             hoverEnabled: true
                                             background: Rectangle {
-                                                color: "#e5e5e5"
+                                                color: colors.backgroundcolor
                                                 border.color: startButton.hovered ? "skyblue" : "gray"
                                                 border.width: 2
                                                 radius: 8
@@ -378,7 +374,7 @@ Popup {
                                             font.family: "Calibri Light"
                                             enabled: true
                                             background: Rectangle {
-                                                color: "#e5e5e5"
+                                                color: colors.backgroundcolor
                                                 border.color: exitButton.hovered ? "skyblue" : "gray"
                                                 border.width: 2
                                                 radius: 8
@@ -386,7 +382,7 @@ Popup {
                                             onClicked: {
                                                 console.log("Exit signal is working...")
                                                 // Qt.quit()
-                                                confirmDialog.open();
+                                                mfgPopup.existClicked()
 
                                             }
                                         }
@@ -401,11 +397,11 @@ Popup {
                             Text {
                                 text: qsTr("Status Information")
                                 font.family: "Calibri Light"
-                                color: "#7d9ae4"
+                                color: colors.titiletextcolor
                                 font.pixelSize: 16
                             }
                             background: Rectangle {
-                                color: "#f0f0f0"
+                                color: colors.backgroundcolor
                             }
                             anchors.top: parent.top
                             anchors.topMargin: 1
@@ -473,108 +469,6 @@ Popup {
         }
     }
 
-    Dialog {
-        id: confirmDialog
-        // title: "Confirmation"
-        height: Math.round(120 * scalefactor)
-        width: Math.round(320 * scalefactor)
-        modal: true
-        background: Rectangle {
-            color: "#e5e5e5"
-            radius: 8
-        }
-        visible: false
-        x: (root.width - width) / 2
-        y: (root.height - height) / 2
-
-        Column {
-            spacing: 15
-            anchors.left: parent.left
-            // anchors.top: parent.top
-            anchors.margins: 16
-
-
-            // Row {
-            //     Label {
-            //         text: "Confirmation"
-            //         font.pointSize: 15 /*Screen.height * 0.014*/
-            //         font.family: "Calibri Light"
-            //         verticalAlignment: Label.AlignVCenter
-            //     }
-            // }
-
-            Row {
-                spacing: 10
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenterOffset: 50 // Move the row downwards
-                Image {
-                    id: questmark1id
-                    source: "qrc:/Image/QuestionMark.png"
-                    height: Math.round(35 * scalefactor)
-                    width: Math.round(35 * scalefactor)
-
-                    anchors.verticalCenter: parent.verticalCenter // Center vertically
-
-                    // Move the image upwards by adjusting the vertical center offset
-                    anchors.verticalCenterOffset: -5
-                }
-
-                Label {
-                    text: "Do you want to Exit..?"
-                    font.pointSize: 15 /*Screen.height * 0.014*/
-                    font.family: "Calibri Light"
-                    verticalAlignment: Label.AlignVCenter
-                }
-            }
-
-            Row {
-                spacing: 18
-                anchors.horizontalCenter: parent.horizontalCenter // Center the row horizontally within the parent
-                Button {
-                    id: yesButton
-                    text: "Yes"
-                    width: Math.round(80 * scalefactor)
-                    height: Math.round(40 * scalefactor)
-                    background: Rectangle {
-                        color: "#e5e5e5"
-                        border.color: yesButton.hovered ? "skyblue" : "gray"
-                        border.width: 2
-                        radius: 8
-                    }
-                    onClicked: {
-                        confirmDialog.onAccepted()
-                    }
-                    focus: true
-                }
-
-                Button {
-                    id: noButton
-                    text: "No"
-                    width: Math.round(80 * scalefactor)
-                    height: Math.round(40 * scalefactor)
-                    background: Rectangle {
-                        color: "#e5e5e5"
-                        border.color: noButton.hovered ? "skyblue" : "gray"
-                        border.width: 2
-                        radius: 4
-                    }
-                    onClicked: {
-                        confirmDialog.onRejected()
-                    }
-                }
-            }
-        }
-
-        onAccepted: {
-            root.closing.disconnect(onWindowClosing) // Disconnect the closing handler
-            root.close() // Close the window if "Yes" is clicked
-        }
-
-        onRejected: {
-            // Keep the window open if "No" is clicked
-            confirmDialog.visible = false
-        }
-    }
 
 
 }

@@ -1,6 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Window 2.15
 import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
 
 Window {
     id:root
@@ -11,10 +12,15 @@ Window {
     visible: true
     title: qsTr("MFG Tool Application")
 
-        maximumWidth: 700 // Prevents resizing wider than 400
-        maximumHeight: 300 // Prevents resizing taller than 300
-        minimumHeight: 300
-        minimumWidth: 700
+
+    Colors{
+        id:colors
+    }
+
+    maximumWidth: 700 // Prevents resizing wider than 400
+    maximumHeight: 300 // Prevents resizing taller than 300
+    minimumHeight: 300
+    minimumWidth: 700
     UUU_Tool_Popup {
         height: 300
         width:700
@@ -25,6 +31,9 @@ Window {
         }
         onStopClicked: {
 
+        }
+        onExistClicked: {
+            confirmDialog.open()
         }
     }
 
@@ -39,63 +48,55 @@ Window {
 
     Dialog {
         id: confirmDialog
-        // title: "Confirmation"
-        height: Math.round(120 * scalefactor)
-        width: Math.round(320 * scalefactor)
+        height: Math.round(140 * scalefactor)
+        width: Math.round(300 * scalefactor)
         modal: true
         background: Rectangle {
-            color: "#e5e5e5"
-            radius: 8
+        color: colors.backgroundcolor
+        radius: 8
         }
         visible: false
-        x: (root.width - width) / 2
-        y: (root.height - height) / 2
+        anchors.centerIn: parent
 
-        Column {
+
+        ColumnLayout {
             spacing: 15
-            anchors.left: parent.left
-            // anchors.top: parent.top
+            anchors.fill: parent
             anchors.margins: 16
-
-
-
-            Row {
+            RowLayout {
                 spacing: 10
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenterOffset: 50 // Move the row downwards
+
+
                 Image {
                     id: questmark1id
                     source: "qrc:/Image/QuestionMark.png"
-                    height: Math.round(35 * scalefactor)
-                    width: Math.round(35 * scalefactor)
-
-                    anchors.verticalCenter: parent.verticalCenter // Center vertically
-
-                    // Move the image upwards by adjusting the vertical center offset
-                    anchors.verticalCenterOffset: -5
+                    Layout.preferredHeight: Math.round(35 * scalefactor)
+                    Layout.preferredWidth: Math.round(35 * scalefactor)
                 }
 
                 Label {
                     text: "Do you want to Exit..?"
-                    font.pointSize: 15 /*Screen.height * 0.014*/
+                    font.pixelSize: 14
                     font.family: "Calibri Light"
                     verticalAlignment: Label.AlignVCenter
+                    Layout.preferredWidth: Math.round(200 * scalefactor)
                 }
             }
 
-            Row {
+            RowLayout {
                 spacing: 18
-                anchors.horizontalCenter: parent.horizontalCenter // Center the row horizontally within the parent
+                Layout.alignment: Qt.AlignCenter
                 Button {
                     id: yesButton
                     text: "Yes"
-                    width: Math.round(80 * scalefactor)
-                    height: Math.round(40 * scalefactor)
+                    font.pixelSize: 14
+                    Layout.preferredWidth: Math.round(80 * scalefactor)
+                    Layout.preferredHeight: Math.round(40 * scalefactor)
                     background: Rectangle {
-                        color: "#e5e5e5"
+                        color: colors.backgroundcolor
                         border.color: yesButton.hovered ? "skyblue" : "gray"
                         border.width: 2
-                        radius: 8
+                        radius: 4
                     }
                     onClicked: {
                         confirmDialog.onAccepted()
@@ -106,10 +107,11 @@ Window {
                 Button {
                     id: noButton
                     text: "No"
-                    width: Math.round(80 * scalefactor)
-                    height: Math.round(40 * scalefactor)
+                    font.pixelSize: 14
+                    Layout.preferredWidth: Math.round(80 * scalefactor)
+                    Layout.preferredHeight: Math.round(40 * scalefactor)
                     background: Rectangle {
-                        color: "#e5e5e5"
+                        color: colors.backgroundcolor
                         border.color: noButton.hovered ? "skyblue" : "gray"
                         border.width: 2
                         radius: 4
