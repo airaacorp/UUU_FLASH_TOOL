@@ -5,7 +5,7 @@
 #include "ExceptionHandler.h"
 
 TransferProgress::TransferProgress(QObject *parent)
-    : QObject(parent), m_progress(0), m_overallProgress(0), m_timer(new QTimer(this)), m_running(false),m_success(0),m_fail(0)
+    : QObject(parent), m_progress(0), m_overallProgress(0), m_timer(new QTimer(this)), m_running(false),m_success(0),m_fail(0),m_failureRate(0)
 {
     connect(m_timer, &QTimer::timeout, this, &TransferProgress::updateProgress);
 }
@@ -60,6 +60,12 @@ void TransferProgress::setFail(int fail)
     qDebug() << "setfail: "<< fail;
 }
 
+// Getter method for Retrieves current failure rate of transfer operations
+double TransferProgress::failureRate() const
+{
+    return m_failureRate;
+}
+
 void TransferProgress::startTransfer()
 {
     if (m_overallProgress >= 1.0) {
@@ -84,6 +90,7 @@ void TransferProgress::stopTransfer()
     qDebug() <<"Failure: " << m_fail;
     logActivity("Failure: " + std::to_string(m_fail));
     emit failChanged();   // Emit signal to notify fail count change
+    updateFailureRate(m_fail, m_success); // Call to update the failureRate with current failure and success counts
     }
     catch(std::exception e){
         throw CustomException(ERROR_FAILURE_MSG,ERROR_FAILURE);
@@ -121,6 +128,7 @@ void TransferProgress::updateProgress()
         qInfo() <<"Success: " << m_success; // Log success status
         logActivity("Successfully Completed Flashing : " + std::to_string(m_success));
         emit successChanged();  // Emit signal indicating success status change
+        updateFailureRate(m_fail, m_success);  // Call to update the failureRate with current failure and success counts
         return; // Exit the function to prevent further updates
     }
 
@@ -138,4 +146,17 @@ void TransferProgress::updateProgress()
     }catch(std::exception e){
         CustomException(ERROR_PROGRESSBAR_COMPLETED_MSG,ERROR_SUCCESS);
     }
+}
+
+// Slot to Update failureRate based on number of failed and successful operations
+void TransferProgress::updateFailureRate(int failureOperations, int successOperations)
+{
+    // Calculating the total number of operations
+    double totalTransfers = failureOperations + successOperations;
+    if(totalTransfers == 0){
+        m_failureRate = 0.0;  // Set failure rate to 0.0 if there are no operations
+    } else {
+        m_failureRate = (failureOperations / totalTransfers) * 100; // Calculating failure rate as percentage
+    }
+    emit failureRateChanged(); // Emit signal to indicate that the failure rate property has changed
 }
