@@ -271,7 +271,7 @@ Popup {
 
                                     Text {
                                         id: susscessnumid
-                                        text: transferProgress.success
+                                        text: transferProgress.success  // Handle success event for transfer progress
                                         anchors.top: parent.top
                                         anchors.topMargin: 25
                                         font.family: "Calibri Light"
@@ -293,7 +293,7 @@ Popup {
 
                                     Text {
                                         id: failurenumid
-                                        text: transferProgress.fail
+                                        text: transferProgress.fail   // Handle failure event for transfer progress
                                         anchors.top: parent.top
                                         anchors.topMargin: 56
                                         font.family: "Calibri Light"

@@ -37,22 +37,24 @@ void TransferProgress::setOverallProgress(double overallProgress)
     }
 }
 
+// Getter for success count
 int TransferProgress::success() const
 {
    return m_success;
 }
-
+// Setter for success count
 void TransferProgress::setSuccess(int success)
 {
 
     qDebug()<< "SetSuccess "<<success ;
 }
-
+// Getter for fail count
 int TransferProgress::fail() const
 {
    return m_fail;
 }
 
+// Setter for fail count
 void TransferProgress::setFail(int fail)
 {
     qDebug() << "setfail: "<< fail;
@@ -78,12 +80,10 @@ void TransferProgress::stopTransfer()
     m_running = false;
     m_timer->stop();
     emit progressStopped();
-    m_fail = 1;
-    m_success = 0;
+    m_fail += 1;      // Incrementing the failure count
     qDebug() <<"Failure: " << m_fail;
     logActivity("Failure: " + std::to_string(m_fail));
-    emit successChanged();
-    emit failChanged();
+    emit failChanged();   // Emit signal to notify fail count change
     }
     catch(std::exception e){
         throw CustomException(ERROR_FAILURE_MSG,ERROR_FAILURE);
@@ -92,14 +92,14 @@ void TransferProgress::stopTransfer()
 
 void TransferProgress::successStatus(int success)
 {
-    m_success = success;
-    emit successChanged();
+    m_success = success; // Set the success status
+    emit successChanged(); // Emit signal to notify success status change
 }
 
 void TransferProgress::failStatus(int fail)
 {
-    m_fail = fail;
-    emit failChanged();
+    m_fail = fail; // Set the fail count
+    emit failChanged(); // Emit signal to notify fail count change
 }
 
 void TransferProgress::updateProgress()
@@ -117,10 +117,10 @@ void TransferProgress::updateProgress()
         m_running = false;
         m_timer->stop();
         emit transferCompleted();
-        m_success = 1;
-        qInfo() <<"Success: " << m_success;
+        m_success = 1;  // Set success status
+        qInfo() <<"Success: " << m_success; // Log success status
         logActivity("Successfully Completed Flashing : " + std::to_string(m_success));
-        emit successChanged();
+        emit successChanged();  // Emit signal indicating success status change
         return; // Exit the function to prevent further updates
     }
 
@@ -128,8 +128,6 @@ void TransferProgress::updateProgress()
     if (m_progress < 1.0) {
         m_progress += 2.10 / 90.0; // Increment m_progress so it completes 1 cycle in 10 ticks
         emit progressChanged(m_progress);
-        m_fail = 0;
-        emit failChanged();
     } else {
 
         // When individual progress completes, reset m_progress and increment overall progress
