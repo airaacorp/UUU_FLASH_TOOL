@@ -10,6 +10,15 @@ Popup {
     closePolicy: Popup.NoAutoClose
     modal: true
 
+
+    /*
+     * @brief Popup component representing the Whole Project(UUU_Tool).
+     *
+     * This popup connects the backend to the frontend and displays the transfer progress.
+     * It contains two progress bars, status labels, and buttons for starting and stopping the transfer.
+     * The popup also handles USB device connections and disconnections.
+     */
+
     property var connectedDevices: []
     property bool stoped: false
     signal startClicked
@@ -17,13 +26,23 @@ Popup {
     signal existClicked
 
 
-
+    /**
+     * @brief The TransferProgress connects the Back-End to  Front-End through calling from cpp.
+     * It has overall and single progress bars functionality.
+     */
     TransferProgress {
         id: transferProgress
 
+        /**
+         * @brief Slot triggered when transfer starts.
+         */
         onTransferStarted: {
             statusLabel.text = "  In Progress  "
         }
+
+        /**
+         * @brief Slot triggered when transfer completes.
+         */
         onTransferCompleted: {
             statusLabel.text = "   Done  "
         }
@@ -147,7 +166,9 @@ Popup {
 
                                     ColumnLayout {
                                         anchors.fill: parent
-
+                                        /**
+                                         * @brief Displays the progress of the current transfer.
+                                         */
                                         ProgressBar {
                                             id: progressBar
                                             implicitWidth: parent.width - 10
@@ -174,6 +195,10 @@ Popup {
                                             }
                                         }
 
+                                        /**
+                                         * @brief Displays the overall progress of all transfers.
+                                         * This bar shows the aggregated progress of all operations.
+                                         */
                                         ProgressBar {
                                             id: progressBar2
                                             implicitWidth: parent.width - 10
@@ -334,6 +359,9 @@ Popup {
                                         anchors.leftMargin: 50
                                         spacing: 60
 
+                                        /**
+                                          * Both progress bars interact with the start button and the TransferProgress
+                                          */
                                         Button {
                                             id: startButton
                                             Layout.preferredWidth: 100

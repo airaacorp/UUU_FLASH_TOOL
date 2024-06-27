@@ -4,17 +4,39 @@
 #include "log.h"
 #include "ExceptionHandler.h"
 
+
+/**
+ * @brief Constructs a TransferProgress object with optional parent.
+ *
+ * Initializes member variables and connects the update timer.
+ *
+ * @param parent Optional parent object.
+ */
 TransferProgress::TransferProgress(QObject *parent)
     : QObject(parent), m_progress(0), m_overallProgress(0), m_timer(new QTimer(this)), m_running(false),m_success(0),m_fail(0),m_failureRate(0)
 {
     connect(m_timer, &QTimer::timeout, this, &TransferProgress::updateProgress);
 }
 
+
+/**
+ * @brief Returns the current progress of the transfer operation.
+ *
+ * @return Current progress value.
+ */
 double TransferProgress::progress() const
 {
     return m_progress;
 }
 
+
+/**
+ * @brief Sets the progress of the transfer operation.
+ *
+ * Emits progressChanged signal if the progress value changes.
+ *
+ * @param progress New progress value.
+ */
 void TransferProgress::setProgress(double progress)
 {
     if (m_progress != progress) {
@@ -23,11 +45,25 @@ void TransferProgress::setProgress(double progress)
     }
 }
 
+
+/**
+ * @brief Returns the overall progress of the transfer operation.
+ *
+ * @return Overall progress value.
+ */
 double TransferProgress::overallProgress() const
 {
     return m_overallProgress;
 }
 
+
+/**
+ * @brief Sets the overall progress of the transfer operation.
+ *
+ * Emits overallProgressChanged signal if the overall progress value changes.
+ *
+ * @param overallProgress New overall progress value.
+ */
 void TransferProgress::setOverallProgress(double overallProgress)
 {
     if (m_overallProgress != overallProgress) {
