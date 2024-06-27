@@ -12,15 +12,21 @@ int main(int argc, char *argv[]) {
 
     try {
         QGuiApplication app(argc, argv);
+        USBMonitor usbMonitor; //creating instance for USBMonitor
+        TransferProgress transferProgress;//Creating instance for TransferProgress
+
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
 
-        qmlRegisterType<USBMonitor>("USBMonitor", 1, 0, "USBMonitor");
-        qmlRegisterType<TransferProgress>("Transfer", 1, 0, "TransferProgress");
 
         QQmlApplicationEngine engine;
+
+        // Declaring setcontext property to access in qml
+        engine.rootContext()->setContextProperty("usbMonitor", &usbMonitor);
+        engine.rootContext()->setContextProperty("transferProgress", &transferProgress);
+
 
         const QUrl url(QStringLiteral("qrc:/main.qml"));
         QObject::connect(

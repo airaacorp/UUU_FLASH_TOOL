@@ -1,8 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
-import USBMonitor 1.0
-import Transfer 1.0
 import QtQuick.Window 2.15
 
 Popup {
@@ -13,7 +11,6 @@ Popup {
 
     /*
      * @brief Popup component representing the Whole Project(UUU_Tool).
-     *
      * This popup connects the backend to the frontend and displays the transfer progress.
      * It contains two progress bars, status labels, and buttons for starting and stopping the transfer.
      * The popup also handles USB device connections and disconnections.
@@ -30,24 +27,17 @@ Popup {
      * @brief The TransferProgress connects the Back-End to  Front-End through calling from cpp.
      * It has overall and single progress bars functionality.
      */
-    TransferProgress {
-        id: transferProgress
-
-        /**
-         * @brief Slot triggered when transfer starts.
-         */
+    Connections{ // To handle the signals
+        target: transferProgress
+        //onTransferStarted is the handler for the transferStarted signal emitted by the transferProgress object
         onTransferStarted: {
-            statusLabel.text = "  In Progress  "
+            statusLabel.text = "  In Progress  "//when it is in progress the label shows in In Progress
         }
-
-        /**
-         * @brief Slot triggered when transfer completes.
-         */
+        //onTransferCompleted is the handler for the transferCompleted signal emitted by the transferProgress object.
         onTransferCompleted: {
             statusLabel.text = "   Done  "
         }
     }
-
     Colors{
         id:colors
     }
@@ -204,7 +194,7 @@ Popup {
                                             implicitWidth: parent.width - 10
                                             implicitHeight: 43
                                             Layout.alignment: Qt.AlignBottom | Qt.AlignHCenter
-                                             // Do not allow the user to start and show progressbar2 also without connecting the device min 1 device
+                                            // Do not allow the user to start and show progressbar2 also without connecting the device min 1 device
                                             value: transferProgress.overallProgress && connectedDevices.length > 0 ? transferProgress.overallProgress : 0
                                             contentItem: Rectangle {
                                                 border.color: colors.bordercolor
@@ -442,11 +432,9 @@ Popup {
         }
     }
 
-    USBMonitor {
-        id: usbMonitor
-    }
 
-    Connections {
+
+    Connections { //To handle the signals
         target: usbMonitor
         function onUsbPortConnected(portDetails,portNumber,hubNumber) {
             console.log("USB port connected: " +portDetails);
@@ -456,6 +444,8 @@ Popup {
             console.log("USB port disconnected: " +portDetails);
             portNo.text = " Unassigned";
         }
+
+        // UPdates the statusLabel as "Device connected"
         function onUsbDeviceConnected(devicePath) {
             console.log("USB device connected: " + devicePath);
             statusLabel.text = "  Device connected";
