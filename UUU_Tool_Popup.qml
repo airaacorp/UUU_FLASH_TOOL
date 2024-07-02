@@ -5,9 +5,10 @@ import QtQuick.Window 2.15
 
 Popup {
     id: mfgPopup
+    //Prevent auto-close
     closePolicy: Popup.NoAutoClose
     modal: true
-
+    //List to store connected devices
 
     /*
      * @brief Popup component representing the Whole Project(UUU_Tool).
@@ -15,14 +16,15 @@ Popup {
      * It contains two progress bars, status labels, and buttons for starting and stopping the transfer.
      * The popup also handles USB device connections and disconnections.
      */
-
     property var connectedDevices: []
+    // Boolean to track stop state
     property bool stoped: false
     signal startClicked
     signal stopClicked
     signal existClicked
-
-
+    // Slot triggered when transfer starts and completes.
+    TransferProgress {
+        id: transferProgress
     /**
      * @brief The TransferProgress connects the Back-End to  Front-End through calling from cpp.
      * It has overall and single progress bars functionality.
@@ -34,6 +36,7 @@ Popup {
             statusLabel.text = "  In Progress  "//when it is in progress the label shows in In Progress
         }
         //onTransferCompleted is the handler for the transferCompleted signal emitted by the transferProgress object.
+
         onTransferCompleted: {
             statusLabel.text = "   Done  "
         }
@@ -156,9 +159,7 @@ Popup {
 
                                     ColumnLayout {
                                         anchors.fill: parent
-                                        /**
-                                         * @brief Displays the progress of the current transfer.
-                                         */
+                                        // @brief Displays the progress of the current transfer.
                                         ProgressBar {
                                             id: progressBar
                                             implicitWidth: parent.width - 10
@@ -184,11 +185,7 @@ Popup {
                                                 }
                                             }
                                         }
-
-                                        /**
-                                         * @brief Displays the overall progress of all transfers.
-                                         * This bar shows the aggregated progress of all operations.
-                                         */
+                                        // Displays the overall progress of all transfers.
                                         ProgressBar {
                                             id: progressBar2
                                             implicitWidth: parent.width - 10
@@ -281,7 +278,8 @@ Popup {
 
                                     Text {
                                         id: susscessnumid
-                                        text: transferProgress.success  // Handle success event for transfer progress
+                                        text: transferProgress.success
+                                        // Handle success event for transfer progress
                                         anchors.top: parent.top
                                         anchors.topMargin: 25
                                         font.family: "Calibri Light"
@@ -303,7 +301,8 @@ Popup {
 
                                     Text {
                                         id: failurenumid
-                                        text: transferProgress.fail   // Handle failure event for transfer progress
+                                        text: transferProgress.fail
+                                        // Handle failure event for transfer progress
                                         anchors.top: parent.top
                                         anchors.topMargin: 56
                                         font.family: "Calibri Light"
@@ -348,10 +347,7 @@ Popup {
                                         anchors.left: parent.left
                                         anchors.leftMargin: 50
                                         spacing: 60
-
-                                        /**
-                                          * Both progress bars interact with the start button and the TransferProgress
-                                          */
+                                        // Both progress bars interact with the start button and the TransferProgress
                                         Button {
                                             id: startButton
                                             Layout.preferredWidth: 100
@@ -363,7 +359,7 @@ Popup {
                                             enabled: connectedDevices.length > 0 && transferProgress.overallProgress < 1.0
                                             hoverEnabled: true
                                             background: Rectangle {
-                                                color: colors.backgroundcolor
+                                                color: colors.bordercolor
                                                 border.color: startButton.hovered ? "skyblue" : "gray"
                                                 border.width: 2
                                                 radius: 8
@@ -392,7 +388,7 @@ Popup {
                                             font.family: "Calibri Light"
                                             enabled: true
                                             background: Rectangle {
-                                                color: colors.backgroundcolor
+                                                color: colors.bordercolor
                                                 border.color: exitButton.hovered ? "skyblue" : "gray"
                                                 border.width: 2
                                                 radius: 8
@@ -486,7 +482,4 @@ Popup {
             }
         }
     }
-
-
-
 }
