@@ -4,6 +4,11 @@
 #include <QObject>
 #include <QTimer>
 
+/**
+ * @brief The TransferProgress class handles the progress and status of a transfer operation.
+ * This class provides properties and methods to manage the progress of a transfer operation,
+ * including overall progress, success,failure status,failureRate and signals for transfer events.
+ */
 class TransferProgress : public QObject
 {
     Q_OBJECT
@@ -14,30 +19,41 @@ class TransferProgress : public QObject
     Q_PROPERTY(int fail READ fail WRITE setFail NOTIFY failChanged FINAL)
     //Property definition for failureRate with getter and change notification
     Q_PROPERTY(double failureRate READ failureRate NOTIFY failureRateChanged)
+
 public:
+
     /**
-     * @brief Constructor for the TransferProgress class.
-     * @param The parent QObject, default is nullptr.
+     * @brief Constructs a TransferProgress object.
+     *
+     * @param parent Optional parent object.
      */
     explicit TransferProgress(QObject *parent = nullptr);
+
     /**
-     * @brief Retrieves the current progress of the individual (single progress bar) transfer operation.
-     * @return The current progress as a double.
+     * @brief Constructs a TransferProgress object.
+     *
+     * @param parent Optional parent object.
      */
     double progress() const;
+
     /**
      * @brief Sets the progress of the transfer operation.
-     * @param The single progress value as double.
+     *
+     * @param progress New progress value.
      */
     void setProgress(double progress);
-    /**
-     * @brief Retrieves the overall progress of the transfer operations.
-     * @return The overall progress as a double.
-     */
-    double overallProgress() const;
+
     /**
      * @brief Sets the overall progress of the transfer operation.
-     * @param overallProgress progress value as double.
+     *
+     * @param overallProgress New overall progress value.
+     */
+    double overallProgress() const;
+
+    /**
+     * @brief Returns the success status of the transfer operation.
+     *
+     * @return Success status (1 if successful, 0 otherwise).
      */
     void setOverallProgress(double overallProgress);
     // Getters and setters for success and fail counts
@@ -47,23 +63,30 @@ public:
     void setFail(int fail);
     // Getter method for failureRate property
     double failureRate() const;
+
 signals:
+
     /**
-     * @brief Signal emitted when the progress changes.
-     * @param progress The new progress value.
+     * @brief Signals that the progress of the transfer operation has changed.
+     *
+     * @param progress Current progress value.
      */
     void progressChanged(double progress);
+
     /**
-     * @brief Signal emitted when the overall progress changes.
-     * @param overallProgress The new overall progress value.
+     * @brief Signals that the overall progress of the transfer operation has changed.
+     *
+     * @param overallProgress Current overall progress value.
      */
     void overallProgressChanged(double overallProgress);
+
     /**
-     * @brief Signal emitted when the transfer operation starts.
+     * @brief Signals that the transfer operation has started.
      */
     void transferStarted();
+
     /**
-     * @brief Signal emitted when the transfer operation completes.
+     * @brief Signals that the failure status of the transfer operation has changed.
      */
     void transferCompleted();
     void progressStopped();
@@ -72,25 +95,30 @@ signals:
     void failChanged();
     // Signal emitted when failureRate property changes
     void failureRateChanged();
+
 public slots:
     /**
-     * @brief Slot to starts the transfer operation.
+     * @brief Starts the transfer operation.
      */
     void startTransfer();
+
     /**
-     * @brief Slot to stops the transfer operation.
+     * @brief Stops the transfer operation.
      */
     void stopTransfer();
     // Slots for setting success and fail status
     void successStatus(int success);
     void failStatus(int fail);
+
 private slots:
+
     /**
-     * @brief Slot to updates the progress of the transfer operation.
+     * @brief Updates the progress of the transfer operation.
      */
     void updateProgress();
     //Slot to Update failureRate based on number of failed and successful operations
     void updateFailureRate(int failureOperations, int successOperations);
+
 private:
     double m_progress;
     double m_overallProgress;
@@ -101,4 +129,4 @@ private:
     double m_failureRate; // Member variable for failureRate
 };
 
-#endif
+#endif // TRANSFERPROGRESS_H
