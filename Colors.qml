@@ -1,5 +1,5 @@
 import QtQuick 2.15
-
+// Define a QtObject to store color properties for UI elements
 QtObject {
     readonly property color bordercolor: "#e5e5e5"
     readonly property color backgroundcolor: "#f0f0f0"

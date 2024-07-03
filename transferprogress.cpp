@@ -5,8 +5,9 @@
 #include "ExceptionHandler.h"
 
 /**
- * @brief Initializing the TransferProgress object and setting default values.
- * Connecting the timer's timeout signal to the updateProgress slot.
+ * @brief Constructs a TransferProgress object with optional parent.
+ * Initializes member variables and connects the update timer.
+ * @param parent Optional parent object.
  */
 TransferProgress::TransferProgress(QObject *parent)
     : QObject(parent), m_progress(0), m_overallProgress(0), m_timer(new QTimer(this)), m_running(false),m_success(0),m_fail(0),m_failureRate(0)
@@ -14,22 +15,17 @@ TransferProgress::TransferProgress(QObject *parent)
     connect(m_timer, &QTimer::timeout, this, &TransferProgress::updateProgress);
 }
 /**
- * @brief TransferProgress::progress
- * Represents the progress of the current individual transfer operation.
- * indicating how much of the current task has been completed as a percentage.
- * @return Single progress bar value.
+ * @brief Returns the current progress of the transfer operation.
+ * @return Current progress value.
  */
 double TransferProgress::progress() const
 {
     return m_progress;
 }
 /**
- * @brief TransferProgress::setProgress
- * Represents the progress of the current individual transfer operation.
- * indicating how much of the current task has been completed as a percentage.
- * Sets the current progress of the individual transfer operation.
+ * @brief Sets the progress of the transfer operation.
  * Emits progressChanged signal if the progress value changes.
- * @return Setting the single progress value.
+ * @param progress New progress value.
  */
 void TransferProgress::setProgress(double progress)
 {
@@ -39,22 +35,17 @@ void TransferProgress::setProgress(double progress)
     }
 }
 /**
- * @brief TransferProgress::overallProgress
- * Represents the overall progress of the entire transfer process.
- * aggregating the progress of all individual transfer operations and.
- * indicating the completion percentage of the total task.
- * @return  Overall progress bar value
+ * @brief Returns the overall progress of the transfer operation.
+ * @return Overall progress value.
  */
 double TransferProgress::overallProgress() const
 {
     return m_overallProgress;
 }
 /**
- * @brief TransferProgress::setOverallProgress
- * Represents the overall progress of the entire transfer process .
- * aggregating the progress of all individual transfer operations.indicating the completion percentage of the total task.
- * Sets the overall progress of the transfer operation.Emits overallProgressChanged signal if the overall progress value changes.
- * @return Setting the Overall progress value.
+ * @brief Sets the overall progress of the transfer operation.
+ * Emits overallProgressChanged signal if the overall progress value changes.
+ * @param overallProgress New overall progress value.
  */
 void TransferProgress::setOverallProgress(double overallProgress)
 {
@@ -87,7 +78,11 @@ void TransferProgress::setFail(int fail)
     qDebug() << "setfail: "<< fail;
 }
 
-// Getter method for Retrieves current failure rate of transfer operations
+/**
+ * @brief TransferProgress::failureRate
+ * indicating current failurerate of file transfer operations
+ * @return  failurerate percentage
+ */
 double TransferProgress::failureRate() const
 {
     return m_failureRate;
@@ -135,13 +130,13 @@ void TransferProgress::stopTransfer()
 }
 void TransferProgress::successStatus(int success)
 {
-    m_success = success; // Set the success status
-    emit successChanged(); // Emit signal to notify success status change
+    m_success = success;
+    emit successChanged();
 }
 void TransferProgress::failStatus(int fail)
 {
-    m_fail = fail; // Set the fail count
-    emit failChanged(); // Emit signal to notify fail count change
+    m_fail = fail;
+    emit failChanged();
 }
 /**
  * @brief TransferProgress::updateProgress
@@ -166,12 +161,10 @@ void TransferProgress::updateProgress()
         updateFailureRate(m_fail, m_success);
         return;
     }
-    // Update the individual progress bar
     if (m_progress < 1.0) {
         m_progress += 2.10 / 90.0;
         emit progressChanged(m_progress);
     } else {
-        // When individual progress completes, reset m_progress and increment overall progress
         m_progress = 0.0;
         m_overallProgress += 1.0 / 9.0;
         emit overallProgressChanged(m_overallProgress);
@@ -180,15 +173,18 @@ void TransferProgress::updateProgress()
         CustomException(ERROR_PROGRESSBAR_COMPLETED_MSG,ERROR_SUCCESS);
     }
 }
-// Slot to Update failureRate based on number of failed and successful operations
-void TransferProgress::updateFailureRate(int failureOperations, int successOperations)
+/**
+ * @brief TransferProgress::updateFailureRate
+ * Updating the failureRate based on failed and successful operations of filetransfer
+ * Calculating failure rate as percentage
+ * @return emits relevant signal and updates the failurerate.
+ */void TransferProgress::updateFailureRate(int failureOperations, int successOperations)
 {
-    // Calculating the total number of operations
     double totalTransfers = failureOperations + successOperations;
     if(totalTransfers == 0){
-        m_failureRate = 0.0;  // Set failure rate to 0.0 if there are no operations
+        m_failureRate = 0.0;
     } else {
-        m_failureRate = (failureOperations / totalTransfers) * 100; // Calculating failure rate as percentage
+        m_failureRate = (failureOperations / totalTransfers) * 100;
     }
-    emit failureRateChanged(); // Emit signal to indicate that the failure rate property has changed
+    emit failureRateChanged();
 }

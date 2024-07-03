@@ -5,7 +5,6 @@ import QtQuick.Layouts 1.15
 
 Window {
     id:root
-    //Define a scaling factor for UI elements alignments
     property real scalefactor: 1.0
     height: 300
     width:700
@@ -65,12 +64,12 @@ Window {
                 Image {
                     id: questmark1id
                     source: "qrc:/Image/QuestionMark.png"
-                    Layout.preferredHeight: Math.round(35 * scalefactor)
-                    Layout.preferredWidth: Math.round(35 * scalefactor)
+                    Layout.preferredHeight: Math.round(40 * scalefactor)
+                    Layout.preferredWidth: Math.round(40 * scalefactor)
                 }
                 Label {
                     text: "Do you want to Exit..?"
-                    font.pixelSize: 14
+                    font.pixelSize: 16
                     font.family: "Calibri Light"
                     verticalAlignment: Label.AlignVCenter
                     Layout.preferredWidth: Math.round(200 * scalefactor)
@@ -82,7 +81,7 @@ Window {
                 Button {
                     id: yesButton
                     text: "Yes"
-                    font.pixelSize: 14
+                    font.pixelSize: 16
                     Layout.preferredWidth: Math.round(80 * scalefactor)
                     Layout.preferredHeight: Math.round(40 * scalefactor)
                     background: Rectangle {
@@ -99,7 +98,7 @@ Window {
                 Button {
                     id: noButton
                     text: "No"
-                    font.pixelSize: 14
+                    font.pixelSize: 16
                     Layout.preferredWidth: Math.round(80 * scalefactor)
                     Layout.preferredHeight: Math.round(40 * scalefactor)
                     background: Rectangle {
