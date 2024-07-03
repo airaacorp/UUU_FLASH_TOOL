@@ -9,31 +9,18 @@ Popup {
     closePolicy: Popup.NoAutoClose
     modal: true
     //List to store connected devices
-
-    /*
-     * @brief Popup component representing the Whole Project(UUU_Tool).
-     * This popup connects the backend to the frontend and displays the transfer progress.
-     * It contains two progress bars, status labels, and buttons for starting and stopping the transfer.
-     * The popup also handles USB device connections and disconnections.
-     */
     property var connectedDevices: []
     // Boolean to track stop state
     property bool stoped: false
     signal startClicked
     signal stopClicked
     signal existClicked
-    // Slot triggered when transfer starts and completes.
-    TransferProgress {
-        id: transferProgress
-    /**
-     * @brief The TransferProgress connects the Back-End to  Front-End through calling from cpp.
-     * It has overall and single progress bars functionality.
-     */
-    Connections{ // To handle the signals
+    // To handle the signals
+    Connections{
         target: transferProgress
         //onTransferStarted is the handler for the transferStarted signal emitted by the transferProgress object
         onTransferStarted: {
-            statusLabel.text = "  In Progress  "//when it is in progress the label shows in In Progress
+            statusLabel.text = "  In Progress  "
         }
         //onTransferCompleted is the handler for the transferCompleted signal emitted by the transferProgress object.
 
@@ -159,7 +146,6 @@ Popup {
 
                                     ColumnLayout {
                                         anchors.fill: parent
-                                        // @brief Displays the progress of the current transfer.
                                         ProgressBar {
                                             id: progressBar
                                             implicitWidth: parent.width - 10
@@ -185,7 +171,6 @@ Popup {
                                                 }
                                             }
                                         }
-                                        // Displays the overall progress of all transfers.
                                         ProgressBar {
                                             id: progressBar2
                                             implicitWidth: parent.width - 10
@@ -279,7 +264,6 @@ Popup {
                                     Text {
                                         id: susscessnumid
                                         text: transferProgress.success
-                                        // Handle success event for transfer progress
                                         anchors.top: parent.top
                                         anchors.topMargin: 25
                                         font.family: "Calibri Light"
@@ -302,7 +286,6 @@ Popup {
                                     Text {
                                         id: failurenumid
                                         text: transferProgress.fail
-                                        // Handle failure event for transfer progress
                                         anchors.top: parent.top
                                         anchors.topMargin: 56
                                         font.family: "Calibri Light"
@@ -324,7 +307,6 @@ Popup {
 
                                     Text {
                                         id: failednumid
-                                        // Set text to failureRate formatted to two decimal places, followed by a percentage sign
                                         text: transferProgress.failureRate.toFixed(2) + "%"
                                         anchors.top: parent.top
                                         anchors.topMargin: 92
@@ -347,14 +329,13 @@ Popup {
                                         anchors.left: parent.left
                                         anchors.leftMargin: 50
                                         spacing: 60
-                                        // Both progress bars interact with the start button and the TransferProgress
                                         Button {
                                             id: startButton
                                             Layout.preferredWidth: 100
                                             Layout.preferredHeight: 80
                                             text: "Start"
                                             font.family: "Calibri Light"
-                                            font.pixelSize: 14
+                                            font.pixelSize: 16
                                             //Without connecting the target device this wont allow to start minimum 1 device Connection should required.
                                             enabled: connectedDevices.length > 0 && transferProgress.overallProgress < 1.0
                                             hoverEnabled: true
@@ -384,7 +365,7 @@ Popup {
                                             Layout.preferredWidth: 100
                                             Layout.preferredHeight: 80
                                             text: "Exit"
-                                            font.pixelSize: 14
+                                            font.pixelSize: 16
                                             font.family: "Calibri Light"
                                             enabled: true
                                             background: Rectangle {
@@ -395,7 +376,6 @@ Popup {
                                             }
                                             onClicked: {
                                                 console.log("Exit signal is working...")
-                                                // Qt.quit()
                                                 mfgPopup.existClicked()
 
                                             }
@@ -428,9 +408,8 @@ Popup {
         }
     }
 
-
-
-    Connections { //To handle the signals
+//To handle the signals
+    Connections {
         target: usbMonitor
         function onUsbPortConnected(portDetails,portNumber,hubNumber) {
             console.log("USB port connected: " +portDetails);
