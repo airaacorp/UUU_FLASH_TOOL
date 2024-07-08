@@ -5,7 +5,6 @@ import QtQuick.Layouts 1.15
 
 Window {
     id:root
-    property real scalefactor: 1.0
     height: 300
     width:700
     visible: true
@@ -22,6 +21,7 @@ Window {
     minimumWidth: 700
     //Including a custom popup component
     UUU_Tool_Popup {
+        id:mainpopup
         height: 300
         width:700
         visible: true
@@ -30,7 +30,7 @@ Window {
 
         }
         onStopClicked: {
-
+            mainpopup.exitcontrol=true
         }
         onExistClicked: {
             confirmDialog.open()
@@ -42,12 +42,14 @@ Window {
     //Handler function for window closing event.
     function onWindowClosing(event) {
         event.accepted = false
-        confirmDialog.open()
+        if(mainpopup.exitcontrol===true){
+            confirmDialog.open()
+        }
     }
     Dialog {
         id: confirmDialog
-        height: Math.round(140 * scalefactor)
-        width: Math.round(300 * scalefactor)
+        height:140
+        width: 300
         modal: true
         background: Rectangle {
             color: colors.backgroundcolor
@@ -64,15 +66,15 @@ Window {
                 Image {
                     id: questmark1id
                     source: "qrc:/Image/QuestionMark.png"
-                    Layout.preferredHeight: Math.round(40 * scalefactor)
-                    Layout.preferredWidth: Math.round(40 * scalefactor)
+                    Layout.preferredHeight: 40
+                    Layout.preferredWidth: 40
                 }
                 Label {
                     text: "Do you want to Exit..?"
                     font.pixelSize: 16
                     font.family: "Calibri Light"
                     verticalAlignment: Label.AlignVCenter
-                    Layout.preferredWidth: Math.round(200 * scalefactor)
+                    Layout.preferredWidth: 200
                 }
             }
             RowLayout {
@@ -82,8 +84,8 @@ Window {
                     id: yesButton
                     text: "Yes"
                     font.pixelSize: 16
-                    Layout.preferredWidth: Math.round(80 * scalefactor)
-                    Layout.preferredHeight: Math.round(40 * scalefactor)
+                    Layout.preferredWidth: 80
+                    Layout.preferredHeight: 40
                     background: Rectangle {
                         color: colors.bordercolor
                         border.color: yesButton.hovered ? "skyblue" : "gray"
@@ -99,8 +101,8 @@ Window {
                     id: noButton
                     text: "No"
                     font.pixelSize: 16
-                    Layout.preferredWidth: Math.round(80 * scalefactor)
-                    Layout.preferredHeight: Math.round(40 * scalefactor)
+                    Layout.preferredWidth: 80
+                    Layout.preferredHeight: 40
                     background: Rectangle {
                         color: colors.bordercolor
                         border.color: noButton.hovered ? "skyblue" : "gray"
@@ -120,6 +122,7 @@ Window {
         }
         onRejected: {
             confirmDialog.visible = false
+
         }
     }
 

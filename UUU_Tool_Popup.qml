@@ -15,17 +15,24 @@ Popup {
     signal startClicked
     signal stopClicked
     signal existClicked
+    //to handle the closing event controls
+    property bool exitcontrol: true
     // To handle the signals
     Connections{
         target: transferProgress
         //onTransferStarted is the handler for the transferStarted signal emitted by the transferProgress object
         onTransferStarted: {
+            exitButton.enabled=false
             statusLabel.text = "  In Progress  "
+            mfgPopup.exitcontrol=false
         }
         //onTransferCompleted is the handler for the transferCompleted signal emitted by the transferProgress object.
 
         onTransferCompleted: {
             statusLabel.text = "   Done  "
+            exitButton.enabled=true
+            mfgPopup.exitcontrol=true
+
         }
     }
     Colors{
@@ -354,6 +361,7 @@ Popup {
                                                 } else if (text === "Stop") {
                                                     transferProgress.stopTransfer()
                                                     mfgPopup.stopClicked()
+                                                    exitButton.enabled=true
                                                     mfgPopup.stoped=true
                                                     text = "Start"
                                                 }
