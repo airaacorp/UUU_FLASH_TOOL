@@ -21,7 +21,7 @@ Window {
     minimumWidth: 700
     //Including a custom popup component
     UUU_Tool_Popup {
-        id:mainpopup
+        id:mfgPopup1
         height: 300
         width:700
         visible: true
@@ -30,10 +30,9 @@ Window {
 
         }
         onStopClicked: {
-            mainpopup.exitcontrol=true
         }
-        onExistClicked: {
-            confirmDialog.open()
+        onExitClicked: {
+            handleExit()
         }
     }
     Component.onCompleted: {
@@ -42,7 +41,13 @@ Window {
     //Handler function for window closing event.
     function onWindowClosing(event) {
         event.accepted = false
-        if(mainpopup.exitcontrol===true){
+        handleExit()
+    }
+
+    function handleExit() {
+        if (mfgPopup1.progressRunning) {
+            warningDialog.open()
+        } else {
             confirmDialog.open()
         }
     }
@@ -51,9 +56,12 @@ Window {
         height:140
         width: 300
         modal: true
+        closePolicy: Popup.NoAutoClose
         background: Rectangle {
             color: colors.backgroundcolor
             radius: 8
+            border.color:colors.backgroundcolor
+            border.width: 2
         }
         visible: false
         anchors.centerIn: parent
@@ -70,7 +78,7 @@ Window {
                     Layout.preferredWidth: 40
                 }
                 Label {
-                    text: "Do you want to Exit..?"
+                    text: "Do you want to Exit ?"
                     font.pixelSize: 16
                     font.family: "Calibri Light"
                     verticalAlignment: Label.AlignVCenter
@@ -123,6 +131,65 @@ Window {
         onRejected: {
             confirmDialog.visible = false
 
+        }
+    }
+    Dialog {
+        id: warningDialog
+        height: 140
+        width: 300
+        modal: true
+        closePolicy: Popup.NoAutoClose
+        background: Rectangle {
+            color: colors.backgroundcolor
+            radius: 8
+            border.color: colors.backgroundcolor
+            border.width: 2
+        }
+        visible: false
+        anchors.centerIn: parent
+        ColumnLayout {
+            spacing: 10
+            anchors.fill: parent
+            anchors.margins: 15
+            Label {
+                text: "Please stop the process"
+                font.pixelSize: 16
+                font.family: "Calibri Light"
+                verticalAlignment: Label.AlignVCenter
+                horizontalAlignment: Label.AlignHCenter
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                Layout.preferredWidth: 250
+            }
+            Label {
+                text: "before exit"
+                font.pixelSize: 16
+                font.family: "Calibri Light"
+                verticalAlignment: Label.AlignVCenter
+                horizontalAlignment: Label.AlignHCenter
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                Layout.preferredWidth: 250
+            }
+            Button {
+                id: okButton
+                text: "OK"
+                font.pixelSize: 16
+                Layout.preferredWidth: 80
+                Layout.preferredHeight: 40
+                background: Rectangle {
+                    color: colors.bordercolor
+                    border.color: okButton.hovered ? "skyblue" : "gray"
+                    border.width: 2
+                    radius: 4
+                }
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                onClicked: {
+                    warningDialog.onAccepted()
+                }
+                focus: true
+            }
+        }
+        onAccepted: {
+            warningDialog.visible = false
         }
     }
 
