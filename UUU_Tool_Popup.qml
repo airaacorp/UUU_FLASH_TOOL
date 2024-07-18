@@ -12,26 +12,23 @@ Popup {
     property var connectedDevices: []
     // Boolean to track stop state
     property bool stoped: false
+    //Boolean to track progress runnig
+    property bool progressRunning: false
     signal startClicked
     signal stopClicked
-    signal existClicked
-    //to handle the closing event controls
-    property bool exitcontrol: true
+    signal exitClicked
     // To handle the signals
     Connections{
         target: transferProgress
         //onTransferStarted is the handler for the transferStarted signal emitted by the transferProgress object
         onTransferStarted: {
-            exitButton.enabled=false
             statusLabel.text = "  In Progress  "
-            mfgPopup.exitcontrol=false
         }
         //onTransferCompleted is the handler for the transferCompleted signal emitted by the transferProgress object.
 
         onTransferCompleted: {
             statusLabel.text = "   Done  "
-            exitButton.enabled=true
-            mfgPopup.exitcontrol=true
+            mfgPopup.progressRunning=false
 
         }
     }
@@ -357,12 +354,14 @@ Popup {
                                                 if (text === "Start") {
                                                     mfgPopup.startClicked()
                                                     mfgPopup.stoped=false
+                                                    mfgPopup.progressRunning=true
                                                     text = "Stop"
                                                 } else if (text === "Stop") {
                                                     transferProgress.stopTransfer()
                                                     mfgPopup.stopClicked()
                                                     exitButton.enabled=true
                                                     mfgPopup.stoped=true
+                                                    mfgPopup.progressRunning=false
                                                     text = "Start"
                                                 }
                                             }
@@ -384,7 +383,7 @@ Popup {
                                             }
                                             onClicked: {
                                                 console.log("Exit signal is working...")
-                                                mfgPopup.existClicked()
+                                                mfgPopup.exitClicked()
 
                                             }
                                         }
