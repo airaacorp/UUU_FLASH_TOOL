@@ -9,6 +9,10 @@ Window {
     width:700
     visible: true
     title: qsTr("MFG Tool Application")
+
+    property string logMessages: ""
+    signal customLogMessagesChanged(string newLogMessages)
+
     // Define a Colors object for managing color themes
     Colors{
         id:colors
@@ -27,21 +31,33 @@ Window {
         visible: true
         anchors.centerIn: parent
         onStartClicked: {
-
+            logMessages += "Start button clicked\n"
+            root.customLogMessagesChanged(logMessages)
         }
         onStopClicked: {
+            logMessages += "Stop button clicked\n"
+            root.customLogMessagesChanged(logMessages)
         }
         onExitClicked: {
             handleExit()
+            logMessages += "Exit button clicked\n"
+            root.customLogMessagesChanged(logMessages)
+        }
+        onLogsClicked: {
+        logViewerComponent.visible=true
         }
     }
     Component.onCompleted: {
         root.closing.connect(onWindowClosing)
+        logMessages += "                                                                     MFG Tool Application started\n"
+        root.customLogMessagesChanged(logMessages)
     }
     //Handler function for window closing event.
     function onWindowClosing(event) {
         event.accepted = false
         handleExit()
+        logMessages += "Main window close button clicked\n"
+        root.customLogMessagesChanged(logMessages)
     }
 
     function handleExit() {
@@ -96,12 +112,13 @@ Window {
                     Layout.preferredHeight: 40
                     background: Rectangle {
                         color: colors.bordercolor
-                        border.color: yesButton.hovered ? "skyblue" : "gray"
+                        border.color: yesButton.hovered ? colors.skyblue : colors.gray
                         border.width: 2
                         radius: 4
                     }
                     onClicked: {
                         confirmDialog.onAccepted()
+
                     }
                     focus: true
                 }
@@ -113,12 +130,14 @@ Window {
                     Layout.preferredHeight: 40
                     background: Rectangle {
                         color: colors.bordercolor
-                        border.color: noButton.hovered ? "skyblue" : "gray"
+                        border.color: noButton.hovered ? colors.skyblue : colors.gray
                         border.width: 2
                         radius: 4
                     }
                     onClicked: {
                         confirmDialog.onRejected()
+                        logMessages += "No button clicked\n"
+                        root.customLogMessagesChanged(logMessages)
                     }
                 }
             }
@@ -177,19 +196,87 @@ Window {
                 Layout.preferredHeight: 40
                 background: Rectangle {
                     color: colors.bordercolor
-                    border.color: okButton.hovered ? "skyblue" : "gray"
+                    border.color: okButton.hovered ?colors.skyblue : colors.gray
                     border.width: 2
                     radius: 4
                 }
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 onClicked: {
                     warningDialog.onAccepted()
+                    logMessages += " Ok button clicked\n"
+                    root.customLogMessagesChanged(logMessages)
                 }
                 focus: true
             }
         }
         onAccepted: {
             warningDialog.visible = false
+        }
+    }
+
+    ApplicationWindow {
+        id: logViewerComponent
+        visible: false
+        maximumWidth: 700
+        maximumHeight: 300
+        minimumHeight: 300
+        minimumWidth: 700
+        title: "Log Viewer"
+        x: root.x + root.width + 50
+        y: root.y
+
+        Rectangle {
+            id: logsrect
+            visible: true
+            height: parent.height
+            width: parent.width
+            anchors.centerIn: parent
+            color: colors.backgroundcolor
+
+            Flickable {
+                id: flickable
+                width: logsrect.width
+                height: logsrect.height
+                clip: true
+                contentWidth: logTextArea.width
+                contentHeight: logTextArea.height
+
+                TextArea {
+                    id: logTextArea
+                    width: flickable.width
+                    height: logTextArea.paintedHeight
+                    readOnly: true
+                    text: root.logMessages
+                    font.pointSize: 12
+                    wrapMode: Text.Wrap
+                    anchors.left: parent.left
+                    anchors.leftMargin: 5
+                    anchors.right: parent.right
+                }
+
+                Connections {
+                    target: root
+                    function onCustomLogMessagesChanged(newLogMessages) {
+                        logTextArea.text = newLogMessages
+                    }
+                }
+
+                Component.onCompleted: {
+                    logTextArea.text = root.logMessages
+                }
+
+                ScrollBar.vertical: ScrollBar {
+                    policy: ScrollBar.AsNeeded
+                    anchors.right: parent.right
+                    width: 12
+
+                    // Customize the ScrollBar style
+                    contentItem: Rectangle {
+                        implicitWidth: 12
+                        color: colors.gray
+                    }
+                }
+            }
         }
     }
 
