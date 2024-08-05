@@ -7,6 +7,10 @@ QtObject {
     readonly property color inprogresscolor: "#096acc"
     readonly property color titiletextcolor: "#7d9ae4"
 
-
+    readonly property color transparent: "transparent"
+    readonly property color gray: "gray"
+    readonly property color green: "green"
+    readonly property color skyblue: "skyblue"
+    readonly property color red: "red"
 
 }

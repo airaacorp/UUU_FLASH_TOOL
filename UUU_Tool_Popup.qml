@@ -14,9 +14,13 @@ Popup {
     property bool stoped: false
     //Boolean to track progress runnig
     property bool progressRunning: false
+    property int progressBar1Cycles: 0
+
     signal startClicked
     signal stopClicked
     signal exitClicked
+    signal logsClicked
+
     // To handle the signals
     Connections{
         target: transferProgress
@@ -57,13 +61,13 @@ Popup {
                         id: unAssignedRectangle
                         Layout.preferredWidth: parent.width / 2
                         Layout.fillHeight: true
-                        color: "transparent"
+                        color: colors.transparent
 
                         Rectangle {
                             id: unAssignedInnerRectangle
                             height: parent.height - 8
                             width: parent.width - 8
-                            color: "transparent"
+                            color: colors.transparent
                             anchors {
                                 bottom: parent.bottom
                                 horizontalCenter: parent.horizontalCenter
@@ -77,7 +81,7 @@ Popup {
 
                                 Rectangle {
                                     id: drivesAndConnectionId
-                                    color: "transparent"
+                                    color: colors.transparent
                                     height: 100
                                     width: parent.width - 4
                                     Layout.alignment: Qt.AlignHCenter
@@ -114,12 +118,12 @@ Popup {
                                             Layout.topMargin: 25
                                             border.width: 1.5
                                             border.color:colors.deviselablebordercolor
-                                            color: "transparent"
+                                            color: colors.transparent
                                             radius: 4
                                             Rectangle{
                                                 width: parent.width
                                                 height: 2
-                                                color: "gray"
+                                                color: colors.gray
                                                 radius: 10
                                             }
 
@@ -133,7 +137,7 @@ Popup {
 
                                                 font.family: "Calibri Light"
                                                 background: Rectangle {
-                                                    color: "transparent"
+                                                    color: colors.transparent
                                                 }
                                             }
                                         }
@@ -146,7 +150,7 @@ Popup {
                                     Layout.preferredWidth: parent.width - 4
                                     Layout.alignment: Qt.AlignHCenter | Qt.AlignBottom
                                     Layout.bottomMargin: 25
-                                    color: "transparent"
+                                    color: colors.transparent
 
                                     ColumnLayout {
                                         anchors.fill: parent
@@ -157,7 +161,13 @@ Popup {
                                             Layout.alignment: Qt.AlignHCenter
                                             // Do not allow the user to start and show progressbar1 also without connecting the device min 1 device.
                                             value: transferProgress.progress && connectedDevices.length > 0 ? transferProgress.progress : 0
-
+                                            onValueChanged: {
+                                                if (value === 1) {
+                                                    progressBar1Cycles++;
+                                                    logMessages += "File " + progressBar1Cycles + " Completed\n";
+                                                    root.customLogMessagesChanged(logMessages);
+                                                }
+                                            }
                                             contentItem: Rectangle {
                                                 border.color: colors.bordercolor
                                                 border.width: 2
@@ -171,7 +181,7 @@ Popup {
 
                                                     implicitWidth: parent.width * parent.parent.value
                                                     implicitHeight: parent.height
-                                                    color: (mfgPopup.stoped===true)?"red":(progressBar.value===1)?"green":colors.inprogresscolor
+                                                    color: (mfgPopup.stoped===true)?colors.red:(progressBar.value===1)?colors.green:colors.inprogresscolor
                                                 }
                                             }
                                         }
@@ -194,7 +204,7 @@ Popup {
                                                     anchors.left: parent.left
                                                     implicitWidth: parent.width * parent.parent.value
                                                     implicitHeight: parent.height
-                                                    color: (mfgPopup.stoped===true)?"red":(parent.width === implicitWidth) ? "green":colors.inprogresscolor
+                                                    color: (mfgPopup.stoped===true)?colors.red:(parent.width === implicitWidth) ?colors.green:colors.inprogresscolor
                                                 }
                                             }
                                         }
@@ -230,13 +240,13 @@ Popup {
                         id: statusInformationRect
                         Layout.fillHeight: true
                         Layout.fillWidth: true
-                        color: "transparent"
+                        color: colors.transparent
 
                         Rectangle {
                             id: statusInformationRectRectangle
                             height: parent.height - 2
                             width: parent.width - 6
-                            color: "transparent"
+                            color: colors.transparent
 
                             ColumnLayout {
                                 id: txtids
@@ -249,7 +259,7 @@ Popup {
                                     Layout.preferredWidth: parent.width
                                     Layout.alignment: Qt.TopEdge
                                     Layout.topMargin: 8
-                                    color: "transparent"
+                                    color: colors.transparent
                                     border.color: colors.bordercolor
                                     border.width: 2
                                     radius: 6
@@ -327,12 +337,12 @@ Popup {
                                     Layout.preferredWidth: parent.width
                                     Layout.alignment: Qt.TopEdge
                                     Layout.topMargin: 35
-                                    color: "transparent"
+                                    color:colors.transparent
 
                                     RowLayout {
                                         anchors.left: parent.left
-                                        anchors.leftMargin: 50
-                                        spacing: 60
+                                        anchors.leftMargin: 15
+                                        spacing: 10
                                         Button {
                                             id: startButton
                                             Layout.preferredWidth: 100
@@ -345,7 +355,7 @@ Popup {
                                             hoverEnabled: true
                                             background: Rectangle {
                                                 color: colors.bordercolor
-                                                border.color: startButton.hovered ? "skyblue" : "gray"
+                                                border.color: startButton.hovered ? colors.skyblue : colors.gray
                                                 border.width: 2
                                                 radius: 8
                                             }
@@ -366,6 +376,25 @@ Popup {
                                                 }
                                             }
                                         }
+                                        Button {
+                                            id: logsButton
+                                            Layout.preferredWidth: 100
+                                            Layout.preferredHeight: 80
+                                            text: "logs"
+                                            font.pixelSize: 16
+                                            font.family: "Calibri Light"
+                                            enabled: true
+                                            background: Rectangle {
+                                                color: colors.bordercolor
+                                                border.color: logsButton.hovered ? colors.skyblue : colors.gray
+                                                border.width: 2
+                                                radius: 8
+                                            }
+                                            onClicked: {
+                                                console.log("logs signal is working...")
+                                                mfgPopup.logsClicked();
+                                            }
+                                        }
 
                                         Button {
                                             id: exitButton
@@ -377,7 +406,7 @@ Popup {
                                             enabled: true
                                             background: Rectangle {
                                                 color: colors.bordercolor
-                                                border.color: exitButton.hovered ? "skyblue" : "gray"
+                                                border.color: exitButton.hovered ? colors.skyblue : colors.gray
                                                 border.width: 2
                                                 radius: 8
                                             }
@@ -421,10 +450,18 @@ Popup {
         function onUsbPortConnected(portDetails,portNumber,hubNumber) {
             console.log("USB port connected: " +portDetails);
             portNo.text = "Hub "+hubNumber+"--Port "+ portNumber;
+
+            logMessages += "DEVICE CONNECTED \n";
+            logMessages += "HUB :   " + hubNumber + "\n";
+            logMessages += "PORT NUMBER :   " + portNumber + "\n";
+            root.customLogMessagesChanged(logMessages);
+
         }
         function onUsbPortDisconnected(portDetails,portNumber,hubNumber) {
             console.log("USB port disconnected: " +portDetails);
             portNo.text = " Unassigned";
+            logMessages += "DEVICE DISCONNECTED \n";
+            root.customLogMessagesChanged(logMessages);
         }
 
         // UPdates the statusLabel as "Device connected"
