@@ -380,7 +380,7 @@ Popup {
                                             id: logsButton
                                             Layout.preferredWidth: 100
                                             Layout.preferredHeight: 80
-                                            text: "logs"
+                                            text: "Logs"
                                             font.pixelSize: 16
                                             font.family: "Calibri Light"
                                             enabled: true
